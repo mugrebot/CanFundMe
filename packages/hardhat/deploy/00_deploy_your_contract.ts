@@ -21,6 +21,14 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
+  const verifier_contract = await deploy("Eippy", {
+    from: deployer,
+    args: ["CanFundMeFactory", "1"],
+    log: true,
+    autoMine: true,
+  });
+
+
   await deploy("YourContract", {
     from: deployer,
     // Contract constructor arguments
@@ -34,7 +42,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const beans = await deploy("CanFundMeFactory", {
     from: deployer,
     // Contract constructor arguments
-    args: [],
+    args: [verifier_contract.address],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -44,7 +52,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   await deploy("CanFundMe", {
     from: deployer,
     // Contract constructor arguments
-    args: [beans.address, "0xcd258fCe467DDAbA643f813141c3560FF6c12518", 100, 10000, 10000, true],
+    args: [beans.address, "0xcd258fCe467DDAbA643f813141c3560FF6c12518", 100, 10000, 10000, true, 0],
     log: true,
     autoMine: true,
   });

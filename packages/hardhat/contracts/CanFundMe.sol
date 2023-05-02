@@ -3,6 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 //import IERC20 from "@openzeppelin/contracts/token/ERC20/IERC20";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./CanFundMeFactory.sol";
 
 
 contract CanFundMe {
@@ -36,6 +37,14 @@ contract CanFundMe {
     uint256 public immutable note_threshold;
 
     uint256 public time_limit;
+
+    uint16 public gitcoin_scoreThreshold = 10;
+
+    uint256 public platform_fee;
+
+    CanFundMeFactory private immutable canFundMeFactory ;
+
+    bool public threshold_crossed;
 
     /// Events
     event Funded(address contributor, uint256 amount);
@@ -71,13 +80,23 @@ contract CanFundMe {
     /// @notice time limit too long
     error TimeLimitTooLong();
 
-    constructor (address CanFundFactory, address _benificiary, uint256 _threshold, uint256 _time_limit, uint256 _note_threshold, bool _accept_note) {
+    constructor (address CanFundFactory, address _benificiary, uint256 _threshold, uint256 _time_limit, uint256 _note_threshold, bool _accept_note, uint16 gitcoinScore) {
+        if (gitcoinScore > gitcoin_scoreThreshold) {
+            platform_fee = 0;
+        }
+
+        // set the platform fee to 5%
+        platform_fee = 5;
+        
         // set the owner
         owner = tx.origin;
         // set the threshold in ether
         threshold = _threshold;
         // set the factory address
         factory = CanFundFactory;
+
+        //
+        canFundMeFactory = CanFundMeFactory(CanFundFactory);
         // set the note_threshold in tokens
         note_threshold = _note_threshold;
 
@@ -113,6 +132,12 @@ contract CanFundMe {
     }
     contributions[msg.sender] += msg.value;
     contributors++;
+
+    //check if the threshold has been met
+    if (funded() == true) {
+        threshold_crossed = true;
+    }
+
     emit Funded(msg.sender, msg.value);
     }
 
@@ -123,6 +148,17 @@ contract CanFundMe {
     }
     benificiary = _benificiary;
     }
+
+    function updateFeeStatusGitcoin () external returns (uint16) {
+        if (msg.sender != owner) {
+            revert NotOwner();
+        }
+        if (canFundMeFactory.gitcoin_scores(msg.sender) > gitcoin_scoreThreshold) {
+            platform_fee = 0;
+        }
+        return canFundMeFactory.gitcoin_scores(msg.sender);  
+        }
+    
     
 
     /// @notice function to withdraw funds if the threshold is not met after the time limit has passed
@@ -150,12 +186,17 @@ contract CanFundMe {
         revert ThresholdNotMet();
     }
 
-    //withdraw the full amount from the contract to the owner, minus 5% fee to platform
-    uint256 platform_fee = (address(this).balance * 5) / 100;
-    uint256 amount = (address(this).balance * 95) / 100;
+    //withdraw the full amount from the contract to the owner, minus 5% fee to platform if the user is not verified on gitcoin with score >10
+    uint256 _platform_fee = (address(this).balance * (platform_fee))/100;
+    uint256 amount = (address(this).balance - _platform_fee);
+
+
     payable(msg.sender).transfer(amount);
-    payable(platform_address).transfer(platform_fee);
+    if (platform_fee > 0) {
+        payable(platform_address).transfer(_platform_fee);
     }
+    }
+    
 
     function contributeWithToken(address tokenAddress, uint256 amount) external {
     if (accept_note == false) {
@@ -174,6 +215,11 @@ contract CanFundMe {
     note_contributions[msg.sender] += amount;
     contributors++;
 
+    //check if the threshold has been met
+    if (funded() == true) {
+        threshold_crossed = true;
+    }
+
     emit NoteFunded(msg.sender, amount);
     }
 
@@ -181,7 +227,7 @@ contract CanFundMe {
     if (accept_note == false) {
         revert NoERC20Accepted();
     }
-    if (note_threshold <= 0) {
+    if (threshold_crossed != true) {
         revert ThresholdNotMet();
     }
     if (note_contributions[msg.sender] <= 0) {
@@ -207,7 +253,7 @@ contract CanFundMe {
     if (msg.sender != owner) {
         revert NotOwner();
     }
-    if (note_threshold <= 0) {
+    if (threshold_crossed != true) {
         revert ThresholdNotMet();
     }
 
@@ -215,11 +261,14 @@ contract CanFundMe {
 
     // withdraw the full amount from the contract to the owner, minus 5% fee to platform
     uint256 note_balance = token.balanceOf(address(this));
-    uint256 platform_fee = (note_balance * 5) / 100;
-    uint256 amount = (note_balance * 95) / 100;
+    uint256 _platform_fee = (note_balance * (platform_fee)) / 100;
+    uint256 amount = (note_balance - _platform_fee);
 
     token.transfer(msg.sender, amount);
-    token.transfer(platform_address, platform_fee);
+
+    if (platform_fee > 0) {
+    token.transfer(platform_address, _platform_fee);
+    }
 
 }
 }

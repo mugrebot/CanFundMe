@@ -75,6 +75,10 @@ const config: HardhatUserConfig = {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
     },
+    cantoTestnet: {
+      url: `https://canto-testnet.plexnode.wtf`,
+      accounts: [deployerPrivateKey],
+    },
   },
   verify: {
     etherscan: {

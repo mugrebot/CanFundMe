@@ -11,9 +11,37 @@ export type ScaffoldConfig = {
   walletAutoConnect: boolean;
 };
 
+const cantoTestnet = {
+  id: 7701,
+  name: "Canto Testnet",
+  network: "cantoTestnet",
+  nativeCurrency: {
+    name: "Canto",
+    symbol: "CANTO",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+        http: ["https://canto-testnet.plexnode.wtf"],
+    },
+    public: {
+        http:  ["https://canto-testnet.plexnode.wtf"],
+    },
+},
+blockExplorers: {
+  default: {
+      name: "CantoTesnet EVM Explorer",
+      url: "https://testnet.tuber.build/",
+  },
+},
+};
+
 const scaffoldConfig = {
   // The network where your DApp lives in
-  targetNetwork: chains.hardhat,
+
+  targetNetwork: cantoTestnet,
+
+
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect on the local network

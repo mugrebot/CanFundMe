@@ -91,7 +91,7 @@ export const Manage = ({ contractAddress }) => {
                     abi: CanFundMeABI,
                   });
 
-                    const { writeAsync: token_withdraw, isLoading: note_loading  } = useScaffoldContractWrite({
+                const { writeAsync: token_withdraw, isLoading: note_loading  } = useScaffoldContractWrite({
                         contractName: "CanFundMe",
                         functionName: "withdraw_threshold_met_with_token",
                         address: contractAddress,
@@ -102,7 +102,7 @@ export const Manage = ({ contractAddress }) => {
 
     return (
         <div>
-{account ? <div>
+    {account ? <div>
     <h1>Manage</h1>
     <h2>Contract Address: {contractAddress}</h2>
     <h2>Owner: {owner}</h2>
@@ -113,8 +113,8 @@ export const Manage = ({ contractAddress }) => {
     {funded ? <h2>Funded: True</h2> : <h2>Funded: False</h2>}
     <Button onClick={writeAsync}>Withdraw</Button>
     <Button style={{ justifyContent: 'right' }} onClick={token_withdraw}>WithdrawNote</Button>
-</div> : <div>Sorry You aren't the owner try another contract address</div>}
-</div>
+    </div> : <div>Sorry You aren't the owner try another contract address</div>}
+    </div>
 
     );
     
