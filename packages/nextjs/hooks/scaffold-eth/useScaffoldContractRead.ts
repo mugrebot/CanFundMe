@@ -23,14 +23,15 @@ export const useScaffoldContractRead = <
   contractName,
   functionName,
   args,
+  address,
   ...readConfig
-}: UseScaffoldReadConfig<TContractName, TFunctionName>) => {
+}: UseScaffoldReadConfig<TContractName, TFunctionName> & { address?: string }) => {
   const { data: deployedContract } = useDeployedContractInfo(contractName);
 
   return useContractRead({
     chainId: getTargetNetwork().id,
     functionName,
-    address: deployedContract?.address,
+    address: address || deployedContract?.address,
     abi: deployedContract?.abi,
     watch: true,
     args,

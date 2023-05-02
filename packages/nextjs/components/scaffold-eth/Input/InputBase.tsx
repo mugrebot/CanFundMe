@@ -1,5 +1,6 @@
 import { ChangeEvent, ReactNode, useCallback } from "react";
 import { CommonInputProps } from "~~/components/scaffold-eth";
+import { TextInput } from "react95";
 
 type InputBaseProps<T> = CommonInputProps<T> & {
   error?: boolean;
@@ -33,16 +34,17 @@ export const InputBase = <T extends { toString: () => string } = string>({
   );
 
   return (
-    <div className={`flex border-2 border-base-300 bg-base-200 rounded-full text-accent ${modifier}`}>
+    <div className={`flex border-2 border-base-300 text-accent ${modifier}`}>
       {prefix}
-      <input
-        className="input input-ghost focus:outline-none focus:bg-transparent focus:text-gray-400 h-[2.2rem] min-h-[2.2rem] px-4 border w-full font-medium placeholder:text-accent/50 text-gray-400"
+      <TextInput
+        className="input-base-300 flex-1"
         placeholder={placeholder}
         name={name}
         value={value?.toString()}
         onChange={handleChange}
         disabled={disabled}
         autoComplete="off"
+        variant="flat"
       />
       {suffix}
     </div>

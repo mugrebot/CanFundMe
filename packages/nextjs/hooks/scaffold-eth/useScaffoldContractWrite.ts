@@ -6,15 +6,8 @@ import { getParsedEthersError } from "~~/components/scaffold-eth";
 import { useDeployedContractInfo, useTransactor } from "~~/hooks/scaffold-eth";
 import { getTargetNetwork, notification } from "~~/utils/scaffold-eth";
 import { ContractAbi, ContractName, UseScaffoldWriteConfig } from "~~/utils/scaffold-eth/contract";
+import CanFundMe_ABI from "../../../hardhat/artifacts/contracts/CanFundMe.sol/CanFundMe.json";
 
-/**
- * @dev wrapper for wagmi's useContractWrite hook(with config prepared by usePrepareContractWrite hook) which loads in deployed contract abi and address automatically
- * @param config - The config settings, including extra wagmi configuration
- * @param config.contractName - deployed contract name
- * @param config.functionName - name of the function to be called
- * @param config.args - arguments for the function
- * @param config.value - value in ETH that will be sent with transaction
- */
 export const useScaffoldContractWrite = <
   TContractName extends ContractName,
   TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, "nonpayable" | "payable">,
@@ -23,8 +16,9 @@ export const useScaffoldContractWrite = <
   functionName,
   args,
   value,
+  address,
   ...writeConfig
-}: UseScaffoldWriteConfig<TContractName, TFunctionName>) => {
+}: UseScaffoldWriteConfig<TContractName, TFunctionName> & { address?: string }) => {
   const { data: deployedContractData } = useDeployedContractInfo(contractName);
   const { chain } = useNetwork();
   const writeTx = useTransactor();
@@ -34,21 +28,17 @@ export const useScaffoldContractWrite = <
   const wagmiContractWrite = useContractWrite({
     mode: "recklesslyUnprepared",
     chainId: configuredNetwork.id,
-    address: deployedContractData?.address,
+    address: address || deployedContractData?.address,
     abi: deployedContractData?.abi as Abi,
     args: args as unknown[],
     functionName: functionName as any,
     overrides: {
-      value: value ? utils.parseEther(value) : undefined,
+    value: value,
     },
     ...writeConfig,
   });
 
   const sendContractWriteTx = async () => {
-    if (!deployedContractData) {
-      notification.error("Target Contract is not deployed, did you forgot to run `yarn deploy`?");
-      return;
-    }
     if (!chain?.id) {
       notification.error("Please connect your wallet");
       return;

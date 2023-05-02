@@ -4,6 +4,7 @@ import { ArrowLeftOnRectangleIcon, ArrowsRightLeftIcon, ChevronDownIcon } from "
 import { Balance, BlockieAvatar } from "~~/components/scaffold-eth";
 import { useAutoConnect, useNetworkColor } from "~~/hooks/scaffold-eth";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
+import { Button } from "react95";
 
 /**
  * Custom Wagmi Connect Button (watch balance + custom design)
@@ -26,36 +27,36 @@ export const RainbowKitCustomConnectButton = () => {
             {(() => {
               if (!connected) {
                 return (
-                  <button className="btn btn-primary btn-sm" onClick={openConnectModal} type="button">
+                  <Button className="btn btn-primary btn-sm" onClick={openConnectModal} type="Button">
                     Connect Wallet
-                  </button>
+                  </Button>
                 );
               }
 
               if (chain.unsupported || chain.id !== configuredNetwork.id) {
                 return (
                   <div className="dropdown dropdown-end">
-                    <button tabIndex={0} className="btn btn-error btn-sm dropdown-toggle">
+                    <Button tabIndex={0} className="btn btn-error btn-sm dropdown-toggle">
                       <span>Wrong network</span>
                       <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0" />
-                    </button>
+                    </Button>
                     <ul tabIndex={0} className="dropdown-content menu p-2 mt-1 shadow-lg bg-base-100 rounded-box">
                       <li>
-                        <button
+                        <Button
                           className="menu-item"
-                          type="button"
+                          type="Button"
                           onClick={() => switchNetwork?.(configuredNetwork.id)}
                         >
                           <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
                           <span className="whitespace-nowrap">
                             Switch to <span style={{ color: networkColor }}>{configuredNetwork.name}</span>
                           </span>
-                        </button>
+                        </Button>
                       </li>
                       <li>
-                        <button className="menu-item text-error" type="button" onClick={() => disconnect()}>
+                        <Button className="menu-item text-error" type="Button" onClick={() => disconnect()}>
                           <ArrowLeftOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" /> <span>Disconnect</span>
-                        </button>
+                        </Button>
                       </li>
                     </ul>
                   </div>
@@ -71,9 +72,9 @@ export const RainbowKitCustomConnectButton = () => {
                         {chain.name}
                       </span>
                     </div>
-                    <button
+                    <Button
                       onClick={openAccountModal}
-                      type="button"
+                      type="Button"
                       className="btn btn-secondary btn-sm pl-0 pr-2 shadow-md"
                     >
                       <BlockieAvatar address={account.address} size={24} ensImage={account.ensAvatar} />
@@ -81,7 +82,7 @@ export const RainbowKitCustomConnectButton = () => {
                       <span>
                         <ChevronDownIcon className="h-6 w-4" />
                       </span>
-                    </button>
+                    </Button>
                   </div>
                 </div>
               );

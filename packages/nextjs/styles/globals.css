@@ -30,3 +30,47 @@ p {
 .btn.btn-ghost {
   @apply shadow-none;
 }
+
+.window-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.window-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.close-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: -1px;
+  margin-top: -1px;
+  transform: rotateZ(45deg);
+  position: relative;
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    background: hsl(var(--p));
+  }
+  &:before {
+    height: 100%;
+    width: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &:after {
+    height: 3px;
+    width: 100%;
+    left: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+

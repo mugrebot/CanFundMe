@@ -1,4 +1,5 @@
 // @ts-check
+const withFonts = require('next-fonts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -11,4 +12,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withFonts(nextConfig);
