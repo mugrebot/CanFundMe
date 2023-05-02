@@ -5,7 +5,7 @@ const contracts = {
       chainId: "7701",
       contracts: {
         Eippy: {
-          address: "0x537a2B05C55eB4080FB50F8bd837ebCabD167a7E",
+          address: "0xA1D8bc33A471667ba4bfA47337EFDc6A601EF9D5",
           abi: [
             {
               inputs: [
@@ -123,7 +123,7 @@ const contracts = {
           ],
         },
         YourContract: {
-          address: "0x82AE8b20F68C4Fd9239b43Ac7332c13883F165bE",
+          address: "0xf0119637dAB5C4354998D391987c854D4673B3d7",
           abi: [
             {
               inputs: [
@@ -265,7 +265,7 @@ const contracts = {
           ],
         },
         CanFundMeFactory: {
-          address: "0x07Eef8DaD7B3189793dF7EcA89953C17680caC31",
+          address: "0xcd74F4E6160FfB2052aDd6cDF21006332E5063c6",
           abi: [
             {
               inputs: [
@@ -583,7 +583,7 @@ const contracts = {
           ],
         },
         CanFundMe: {
-          address: "0x74964628CE07816e42bCbBB2F01d6418a7b24F5F",
+          address: "0xd66bFEE6c7A68bbe5650b0BeAB8d27BcA3CF6C5E",
           abi: [
             {
               inputs: [

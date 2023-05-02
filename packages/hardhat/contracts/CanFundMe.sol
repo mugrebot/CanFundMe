@@ -191,7 +191,7 @@ contract CanFundMe {
     uint256 amount = (address(this).balance - _platform_fee);
 
 
-    payable(msg.sender).transfer(amount);
+    payable(benificiary).transfer(amount);
     if (platform_fee > 0) {
         payable(platform_address).transfer(_platform_fee);
     }

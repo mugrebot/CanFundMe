@@ -78,6 +78,13 @@ export const CanFund = ({ contractAddress }) => {
     abi: CanFundMeABI,
   });
 
+  const { writeAsync: gitcoin, isLoading: gitcoinLoading } = useScaffoldContractWrite({
+    contractName: "CanFundMe",
+    functionName: "updateFeeStatusGitcoin",
+    address: contractAddress,
+    abi: CanFundMeABI,
+  });
+
   //set below to type number
   const [contract_balance, setContractBalance] = useState();
 
@@ -260,6 +267,8 @@ export const CanFund = ({ contractAddress }) => {
               </Button>
               <Button onClick={clear} disabled={!amount || fundMeIsLoading}>
                 Clear
+              </Button>
+              <Button onClick={gitcoin} disabled={gitcoinLoading}>
               </Button>
             </div>
           </Window>
