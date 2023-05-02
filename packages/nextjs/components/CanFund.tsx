@@ -10,10 +10,11 @@ import {
   ProgressBar,
   Window,
   WindowHeader,
+  Checkbox
 } from "react95";
 import styled from "styled-components";
 import { useProvider } from "wagmi";
-import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { useScaffoldContractWrite} from "~~/hooks/scaffold-eth";
 import {
   useScaffoldContract,
   useScaffoldContractRead,
@@ -22,7 +23,8 @@ import {
 } from "~~/hooks/scaffold-eth";
 import Draggable from "react-draggable";
 import CanFundMe_ABI from "../../hardhat/artifacts/contracts/CanFundMe.sol/CanFundMe.json";
-import { debounce } from 'lodash';
+import { EventAnimation } from "./EventAnimation";
+
 
 // Add these styled components
 const Wrapper = styled.div`
@@ -39,6 +41,7 @@ const ProgressBarContainer = styled.div`
 
 export const CanFund = ({ contractAddress }) => {
   const [amount, setAmount] = useState();
+  const [_accept_note, setAcceptNote] = useState(true || false);
 
   // Create a useRef for each draggable Window
   const window1Ref = React.useRef(null);
@@ -49,15 +52,24 @@ export const CanFund = ({ contractAddress }) => {
 
   const provider = useProvider();
 
-  console.log(contractAddress);
 
-  const { writeAsync, isLoading } = useScaffoldContractWrite({
-    contractName: "CanFundMe",
-    functionName: "fundMe",
-    value: amount && amount?.toString(),
-    address: contractAddress,
-    abi: CanFundMeABI,
-  });
+const { writeAsync: fundMeAsync, isLoading: fundMeIsLoading } = useScaffoldContractWrite({
+  contractName: "CanFundMe",
+  functionName: "fundMe",
+  value: amount && amount?.toString(),
+  address: contractAddress,
+  abi: CanFundMeABI,
+});
+
+const { writeAsync: contributeWithTokenAsync, isLoading: contributeWithTokenIsLoading } = useScaffoldContractWrite({
+  contractName: "CanFundMe",
+  functionName: "contributeWithToken",
+  address: contractAddress,
+  abi: CanFundMeABI,
+  args: ["0x4e71A2E537B7f9D9413D3991D37958c0b5e1e503", amount],
+});
+
+    
 
   const { data: threshold } = useScaffoldContractRead({
     contractName: "CanFundMe",
@@ -79,6 +91,7 @@ export const CanFund = ({ contractAddress }) => {
     address: contractAddress,
     abi: CanFundMeABI,
   });
+
 
   //set below to type number
   const [contract_balance, setContractBalance] = useState();
@@ -176,7 +189,6 @@ const calculateDefaultPositions = () => {
       y: (windowHeight) / 8000,
     };
   
-    console.log(getTimeRemainingInSeconds(time_limit));
   
     return { timeRemainingWindowPosition, fundingProgressWindowPosition, fundMeWindowPosition };
   };
@@ -204,8 +216,21 @@ const calculateDefaultPositions = () => {
     fundMeWindowPosition,
   } = calculateDefaultPositions();
 
+  const handleAddFundsClick = async () => {
+    if (_accept_note) {
+      await contributeWithTokenAsync();
+    } else {
+      await fundMeAsync();
+    }
+  };
+
+  
   return (
-    <div style={{ zIndex: 1}}>
+    <div>
+        <div style={{zIndex: -100}}>
+    <EventAnimation contractAddress={contractAddress} />
+    </div>
+    <div style={{ zIndex: 0}}>
       <Draggable nodeRef={window2Ref} bounds="body" defaultPosition={timeRemainingWindowPosition}>
         <Window ref={window2Ref}>
           <div>
@@ -228,7 +253,7 @@ const calculateDefaultPositions = () => {
         </ProgressBarContainer>
       </Draggable>
       <Draggable nodeRef={window1Ref} bounds="body" defaultPosition={fundMeWindowPosition}>
-        <Window style={{ height: 290, width: 223 }} shadow={true} ref={window1Ref}>
+        <Window style={{ height: 350, width: 223 }} shadow={true} ref={window1Ref}>
           <WindowHeader className="window-title">
             <span>FundMe.exe</span>
             <Button onClick={resetPositions}>
@@ -255,20 +280,22 @@ const calculateDefaultPositions = () => {
     value={amount}
     name={"amount"}
     placeholder="0"
-    disabled={isLoading}
     onChange={handleAmountChange}
   />
 </div>
+<label>Sending Note?</label>
+        <Checkbox checked={_accept_note} onChange={(value) => setAcceptNote(!_accept_note)} />
 <div style={{ padding: 5 }}>
-  <Button onClick={writeAsync} disabled={!amount || isLoading}>
-    {isLoading ? "Funding..." : "Fund"}
-  </Button>
-  <Button onClick={clear} disabled={!amount || isLoading}>
+<Button onClick={handleAddFundsClick} disabled={fundMeIsLoading || contributeWithTokenIsLoading}>
+  {(fundMeIsLoading || contributeWithTokenIsLoading) ? "Adding Funds..." : "Add Funds"}
+</Button>
+  <Button onClick={clear} disabled={!amount || fundMeIsLoading}>
     Clear
   </Button>
 </div>
 </Window>
 </Draggable>
+</div>
 </div>
 );
 };

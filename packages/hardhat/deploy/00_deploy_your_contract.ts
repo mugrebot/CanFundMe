@@ -31,7 +31,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     autoMine: true,
   });
 
-  await deploy("CanFundMeFactory", {
+  const beans = await deploy("CanFundMeFactory", {
     from: deployer,
     // Contract constructor arguments
     args: [],
@@ -41,9 +41,18 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     autoMine: true,
   });
 
+  await deploy("CanFundMe", {
+    from: deployer,
+    // Contract constructor arguments
+    args: [beans.address, "0xcd258fCe467DDAbA643f813141c3560FF6c12518", 100, 10000, 10000, true],
+    log: true,
+    autoMine: true,
+  });
+
   // Get the deployed contract
   // const yourContract = await hre.ethers.getContract("YourContract", deployer);
 };
+
 
 export default deployYourContract;
 

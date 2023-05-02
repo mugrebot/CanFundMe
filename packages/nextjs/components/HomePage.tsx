@@ -20,7 +20,7 @@ import { useOutsideClick } from "~~/hooks/scaffold-eth";
 const Wrapper = styled.div`
   padding: 5rem;
   background: ${({ theme }) => theme.desktopBackground};
-  z-index: 100;
+  z-index: 1000;
 `;
 
 const NavLink = ({ href, children }) => {
@@ -79,7 +79,7 @@ export const HomePage = () => {
     <Wrapper>
       <AppBar>
         <Toolbar style={{ justifyContent: "space-between" }}>
-          <div style={{ position: "relative", display: "inline-block" }}>
+
             <Button
               onClick={() => setOpen(!open)}
               active={open}
@@ -111,7 +111,6 @@ export const HomePage = () => {
                 </MenuListItem>
               </MenuList>
             )}
-          </div>
           <TextInput placeholder="Search..." width={150} />
           <div style={{ display: "flex", alignItems: "center" }}>
             <RainbowKitCustomConnectButton />

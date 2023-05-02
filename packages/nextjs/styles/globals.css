@@ -74,3 +74,11 @@ p {
   }
 }
 
+.beans {
+  z-index: 1000;
+}
+
+.header {
+  zIndex: 10000;
+}
+

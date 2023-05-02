@@ -44,7 +44,7 @@ export const InputBase = <T extends { toString: () => string } = string>({
         onChange={handleChange}
         disabled={disabled}
         autoComplete="off"
-        variant="flat"
+        variant="default"
       />
       {suffix}
     </div>

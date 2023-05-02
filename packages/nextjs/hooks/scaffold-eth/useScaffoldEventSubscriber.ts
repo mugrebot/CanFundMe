@@ -21,11 +21,12 @@ export const useScaffoldEventSubscriber = <
   eventName,
   listener,
   once,
-}: UseScaffoldEventConfig<TContractName, TEventName, TEventInputs>) => {
+  address,
+}: UseScaffoldEventConfig<TContractName, TEventName, TEventInputs> & { address?: string }) => {
   const { data: deployedContractData } = useDeployedContractInfo(contractName);
 
   return useContractEvent({
-    address: deployedContractData?.address,
+    address: address || deployedContractData?.address,
     abi: deployedContractData?.abi as Abi,
     chainId: getTargetNetwork().id,
     listener: listener as (...args: unknown[]) => void,

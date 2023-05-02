@@ -27,6 +27,7 @@ export const useScaffoldEventHistory = <
   blockData,
   transactionData,
   receiptData,
+  address,
 }: {
   contractName: TContractName;
   eventName: TEventName;
@@ -35,6 +36,7 @@ export const useScaffoldEventHistory = <
   blockData?: boolean;
   transactionData?: boolean;
   receiptData?: boolean;
+  address?: string;
 }) => {
   const [events, setEvents] = useState<any[]>();
   const [isLoading, setIsLoading] = useState(true);
@@ -43,7 +45,7 @@ export const useScaffoldEventHistory = <
   const provider = useProvider();
 
   const contract = useContract({
-    address: deployedContractData?.address,
+    address: address || deployedContractData?.address,
     abi: deployedContractData?.abi,
     signerOrProvider: provider,
   });
