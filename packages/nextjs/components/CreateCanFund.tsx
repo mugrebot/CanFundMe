@@ -31,11 +31,7 @@ const CreateCanFund: React.FC = () => {
     contractName: "CanFundMeFactory",
   });
 
-  console.log(factory);
 
-  console.log(_accept_note);
-
-  console.log(_note_threshold);
 
 
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
@@ -74,6 +70,7 @@ const CreateCanFund: React.FC = () => {
           router.push(`/Manage/${selectedAddress}`);
         }
       };
+
       
 
 

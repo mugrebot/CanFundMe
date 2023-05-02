@@ -30,10 +30,10 @@ contract CanFundMe {
     uint256 public contributors;
 
     /// @notice the threshold for the contract in wei
-    uint256 public threshold;
+    uint256 public immutable threshold;
 
     /// @notice the threshold for the contract in ERC20 tokens
-    uint256 public note_threshold;
+    uint256 public immutable note_threshold;
 
     uint256 public time_limit;
 
@@ -99,7 +99,7 @@ contract CanFundMe {
 
     /// @notice view function that returns true/false if the threshold has been met
     function funded() public view returns (bool) {
-    if (address(this).balance >= threshold) {
+    if (address(this).balance >= threshold || IERC20(ALLOWED_TOKEN_ADDRESS).balanceOf(address(this)) >= note_threshold) {
         return true;
     } else {
         return false;

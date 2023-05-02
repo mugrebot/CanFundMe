@@ -60,7 +60,7 @@ useScaffoldEventSubscriber({
  
 
     return (
-        <div className="flex flex-col justify-center items-center sm:px-0 lg:py-auto max-w-[100vw] ">
+        <div className="flex flex-col justify-center items-center py-10 px-5 sm:px-0 lg:py-auto max-w-[100vw] ">
           {/* ... (other elements) */}
           <div>
             <div className="relative overflow-x-hidden">
