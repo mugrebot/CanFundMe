@@ -5,7 +5,7 @@ const contracts = {
       chainId: "7701",
       contracts: {
         Eippy: {
-          address: "0xA1D8bc33A471667ba4bfA47337EFDc6A601EF9D5",
+          address: "0xa90e6DEd87ed29D9d99eb0CbDb813081BEE689A8",
           abi: [
             {
               inputs: [
@@ -123,7 +123,7 @@ const contracts = {
           ],
         },
         YourContract: {
-          address: "0xf0119637dAB5C4354998D391987c854D4673B3d7",
+          address: "0x3Fc055da59f95CEC463ff07f16798c0274A5826e",
           abi: [
             {
               inputs: [
@@ -265,7 +265,7 @@ const contracts = {
           ],
         },
         CanFundMeFactory: {
-          address: "0xcd74F4E6160FfB2052aDd6cDF21006332E5063c6",
+          address: "0x57a39121159d46326279D81b3CFA774Bd6B5ed1b",
           abi: [
             {
               inputs: [
@@ -375,11 +375,6 @@ const contracts = {
                   name: "_note_threshold",
                   type: "uint256",
                 },
-                {
-                  internalType: "bool",
-                  name: "_accept_note",
-                  type: "bool",
-                },
               ],
               name: "createCanFundMe",
               outputs: [
@@ -413,11 +408,6 @@ const contracts = {
                   internalType: "uint256",
                   name: "_note_threshold",
                   type: "uint256",
-                },
-                {
-                  internalType: "bool",
-                  name: "_accept_note",
-                  type: "bool",
                 },
                 {
                   internalType: "uint16",
@@ -583,7 +573,7 @@ const contracts = {
           ],
         },
         CanFundMe: {
-          address: "0xd66bFEE6c7A68bbe5650b0BeAB8d27BcA3CF6C5E",
+          address: "0x32B8bA2B723C94bbD8407E241766F29d444C501D",
           abi: [
             {
               inputs: [
@@ -613,11 +603,6 @@ const contracts = {
                   type: "uint256",
                 },
                 {
-                  internalType: "bool",
-                  name: "_accept_note",
-                  type: "bool",
-                },
-                {
                   internalType: "uint16",
                   name: "gitcoinScore",
                   type: "uint16",
@@ -629,11 +614,6 @@ const contracts = {
             {
               inputs: [],
               name: "IsntAllowedToken",
-              type: "error",
-            },
-            {
-              inputs: [],
-              name: "NoERC20Accepted",
               type: "error",
             },
             {
@@ -724,19 +704,6 @@ const contracts = {
             },
             {
               inputs: [],
-              name: "accept_note",
-              outputs: [
-                {
-                  internalType: "bool",
-                  name: "",
-                  type: "bool",
-                },
-              ],
-              stateMutability: "view",
-              type: "function",
-            },
-            {
-              inputs: [],
               name: "benificiary",
               outputs: [
                 {
@@ -764,11 +731,6 @@ const contracts = {
             {
               inputs: [
                 {
-                  internalType: "address",
-                  name: "tokenAddress",
-                  type: "address",
-                },
-                {
                   internalType: "uint256",
                   name: "amount",
                   type: "uint256",
@@ -793,32 +755,6 @@ const contracts = {
                   internalType: "uint256",
                   name: "",
                   type: "uint256",
-                },
-              ],
-              stateMutability: "view",
-              type: "function",
-            },
-            {
-              inputs: [],
-              name: "contributors",
-              outputs: [
-                {
-                  internalType: "uint256",
-                  name: "",
-                  type: "uint256",
-                },
-              ],
-              stateMutability: "view",
-              type: "function",
-            },
-            {
-              inputs: [],
-              name: "factory",
-              outputs: [
-                {
-                  internalType: "address",
-                  name: "",
-                  type: "address",
                 },
               ],
               stateMutability: "view",
@@ -852,6 +788,19 @@ const contracts = {
                   internalType: "uint16",
                   name: "",
                   type: "uint16",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "noteToken",
+              outputs: [
+                {
+                  internalType: "contract IERC20",
+                  name: "",
+                  type: "address",
                 },
               ],
               stateMutability: "view",
@@ -969,6 +918,19 @@ const contracts = {
             },
             {
               inputs: [],
+              name: "token_balance",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
               name: "updateFeeStatusGitcoin",
               outputs: [
                 {
@@ -988,13 +950,7 @@ const contracts = {
               type: "function",
             },
             {
-              inputs: [
-                {
-                  internalType: "address",
-                  name: "tokenAddress",
-                  type: "address",
-                },
-              ],
+              inputs: [],
               name: "withdraw_threshold_met_with_token",
               outputs: [],
               stateMutability: "nonpayable",
@@ -1008,13 +964,7 @@ const contracts = {
               type: "function",
             },
             {
-              inputs: [
-                {
-                  internalType: "address",
-                  name: "tokenAddress",
-                  type: "address",
-                },
-              ],
+              inputs: [],
               name: "withdraw_threshold_missed_with_token",
               outputs: [],
               stateMutability: "nonpayable",

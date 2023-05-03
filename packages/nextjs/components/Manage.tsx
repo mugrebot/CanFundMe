@@ -22,13 +22,18 @@ import {
 } from "~~/hooks/scaffold-eth";
 import Draggable from "react-draggable";
 import CanFundMe_ABI from "../../hardhat/artifacts/contracts/CanFundMe.sol/CanFundMe.json";
-import { useAccount } from 'wagmi'
+import { useAccount, useContract, useSigner, useBalance } from 'wagmi'
 
 export const Manage = ({ contractAddress }) => {
 
     const { address: account } = useAccount();
 
+    const { data: signer } = useSigner();
+
     const CanFundMeABI = CanFundMe_ABI.abi;
+
+    const { data: canto_balance, isError: balance_error, isLoading: balance_loading } = useBalance({address: contractAddress});
+    console.log(canto_balance, balance_error, balance_loading);
 
     const { data: threshold } = useScaffoldContractRead({
         contractName: "CanFundMe",
@@ -96,8 +101,33 @@ export const Manage = ({ contractAddress }) => {
                         functionName: "withdraw_threshold_met_with_token",
                         address: contractAddress,
                         abi: CanFundMeABI,
-                        args: ['0x4e71A2E537B7f9D9413D3991D37958c0b5e1e503']
                         });
+
+                const { writeAsync: updateGitcoin, isLoading: gitcoin_loading  } = useScaffoldContractWrite({
+                            contractName: "CanFundMe",
+                            functionName: "updateFeeStatusGitcoin",
+                            address: contractAddress,
+                            abi: CanFundMeABI,
+                });
+
+                const { data: note_balance } = useScaffoldContractRead({
+                    contractName: "CanFundMe",
+                    functionName: "token_balance",
+                    address: contractAddress,
+                    abi: CanFundMeABI,
+                    });
+
+                const { data: gitcoin_score } = useScaffoldContractRead({
+                    contractName: "CanFundMeFactory",
+                    functionName: "gitcoin_scores",
+                    address: '0x57a39121159d46326279D81b3CFA774Bd6B5ed1b',
+                    abi: CanFundMeABI,
+                    args: [`${account}`]
+                  });
+
+
+
+                 
 
 
     return (
@@ -110,9 +140,13 @@ export const Manage = ({ contractAddress }) => {
     <h2>Threshold: {Number(threshold)}</h2>
     <h2>Note Threshold: {Number(note_threshold)}</h2>
     <h2>Time Limit: {Number(time_limit)}</h2>
+    <h2>Balance: {canto_balance?.formatted}</h2>
+    <h2>Note Balance: {Number(note_balance)}</h2>
     {funded ? <h2>Funded: True</h2> : <h2>Funded: False</h2>}
+    {gitcoin_score ? <h2>Gitcoin Score: {Number(gitcoin_score)} -- platform Fees are 0</h2> : <h2>Gitcoin Score: 0, Platform fees are 5%</h2>}
     <Button onClick={writeAsync}>Withdraw</Button>
     <Button style={{ justifyContent: 'right' }} onClick={token_withdraw}>WithdrawNote</Button>
+    <Button style={{ justifyContent: 'right' }} onClick={updateGitcoin}>Update Gitcoin Score</Button>
     </div> : <div>Sorry You aren't the owner try another contract address</div>}
     </div>
 

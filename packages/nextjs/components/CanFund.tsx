@@ -6,7 +6,7 @@ import { ethers, utils } from "ethers";
 import { Button, Checkbox, Counter, Frame, Hourglass, NumberInput, ProgressBar, Window, WindowHeader } from "react95";
 import Draggable from "react-draggable";
 import styled from "styled-components";
-import { useProvider } from "wagmi";
+import { useProvider, useAccount, useSigner } from "wagmi";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import {
   useScaffoldContract,
@@ -14,6 +14,7 @@ import {
   useScaffoldEventHistory,
   useScaffoldEventSubscriber,
 } from "~~/hooks/scaffold-eth";
+import IERC20_ABI from "../../hardhat/artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json";
 
 // Add these styled components
 const Wrapper = styled.div`
@@ -28,9 +29,11 @@ const ProgressBarContainer = styled.div`
   max-width: 200px;
 `;
 
+
 export const CanFund = ({ contractAddress }) => {
   const [amount, setAmount] = useState();
   const [_accept_note, setAcceptNote] = useState(true || false);
+  const [txHash, setTxHash] = useState("");
 
   // Create a useRef for each draggable Window
   const window1Ref = React.useRef(null);
@@ -39,7 +42,14 @@ export const CanFund = ({ contractAddress }) => {
 
   const CanFundMeABI = CanFundMe_ABI.abi;
 
+  const IERC20ABI = IERC20_ABI.abi;
+
+  const { data: signer } = useSigner();
+
   const provider = useProvider();
+
+  const { address: account } = useAccount();
+
 
   const { writeAsync: fundMeAsync, isLoading: fundMeIsLoading } = useScaffoldContractWrite({
     contractName: "CanFundMe",
@@ -54,8 +64,16 @@ export const CanFund = ({ contractAddress }) => {
     functionName: "contributeWithToken",
     address: contractAddress,
     abi: CanFundMeABI,
-    args: ["0x4e71A2E537B7f9D9413D3991D37958c0b5e1e503", amount],
+    args: [`${amount}`],
   });
+
+  const { data: note_balance } = useScaffoldContractRead({
+    contractName: "CanFundMe",
+    functionName: "token_balance",
+    address: contractAddress,
+    abi: CanFundMeABI,
+  });
+
 
   const { data: threshold } = useScaffoldContractRead({
     contractName: "CanFundMe",
@@ -84,6 +102,13 @@ export const CanFund = ({ contractAddress }) => {
     address: contractAddress,
     abi: CanFundMeABI,
   });
+
+  const { data: note_threshold } = useScaffoldContractRead({
+    contractName: "CanFundMe",
+    functionName: "note_threshold",
+    address: contractAddress,
+    abi: CanFundMeABI,
+    });
 
   //set below to type number
   const [contract_balance, setContractBalance] = useState();
@@ -196,13 +221,37 @@ export const CanFund = ({ contractAddress }) => {
   const { timeRemainingWindowPosition, fundingProgressWindowPosition, fundMeWindowPosition } =
     calculateDefaultPositions();
 
-  const handleAddFundsClick = async () => {
-    if (_accept_note) {
-      await contributeWithTokenAsync();
-    } else {
-      await fundMeAsync();
-    }
-  };
+    const handleApproveClick = async () => {
+      
+      try {
+        const erc20 = new ethers.Contract('0x03F734Bd9847575fDbE9bEaDDf9C166F880B5E5f', IERC20ABI, signer);
+        console.log(erc20);
+        const tx = await erc20.approve(contractAddress, amount);
+        setTxHash(tx.hash);
+        
+      } catch (error) {
+        console.error("Error in handleApproveClick:", error);
+      }
+    };
+
+
+
+    const handleAddFundsClick = async () => {
+      if (_accept_note) {
+        try {
+          // Initialize the token contract
+    
+          // Approve the CanFundMe contract to spend 'amount' tokens on behalf of the user
+    
+          // Call the 'contributeWithToken' function on the CanFundMe contract
+          await contributeWithTokenAsync();
+        } catch (error) {
+          console.error("Error in handleAddFundsClick:", error);
+        }
+      } else {
+        await fundMeAsync();
+      }
+    };
 
   return (
     <div>
@@ -234,7 +283,7 @@ export const CanFund = ({ contractAddress }) => {
           </ProgressBarContainer>
         </Draggable>
         <Draggable nodeRef={window1Ref} bounds="body" defaultPosition={fundMeWindowPosition}>
-          <Window style={{ height: 350, width: 223 }} shadow={true} ref={window1Ref}>
+          <Window style={{ height: 450, width: 223 }} shadow={true} ref={window1Ref}>
             <WindowHeader className="window-title">
               <span>FundMe.exe</span>
               <Button onClick={resetPositions}>
@@ -245,14 +294,17 @@ export const CanFund = ({ contractAddress }) => {
               <h3>Threshold:</h3>
               {threshold && <span>{threshold.toString()}</span>}
             </div>
-
+            <h3>NoteThreshold</h3>
+            {note_threshold && <span>{note_threshold.toString()}</span>}
             <div>
               <h3>Funded:</h3>
               {funded && funded.toString()}
             </div>
             <div>
               <h3>Contract Balance:</h3>
-              {contract_balance} Canto
+              {contract_balance} CANTO
+              <br />
+              {Number(note_balance) * 10**-18} NOTE
             </div>
 
             <div>
@@ -269,6 +321,10 @@ export const CanFund = ({ contractAddress }) => {
                 Clear
               </Button>
               <Button onClick={gitcoin} disabled={gitcoinLoading}>
+                {gitcoinLoading ? "Loading..." : "Gitcoin"}
+              </Button>
+              <Button onClick={handleApproveClick}>
+                Approve
               </Button>
             </div>
           </Window>

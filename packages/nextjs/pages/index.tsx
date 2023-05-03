@@ -31,14 +31,12 @@ const Home: NextPage = () => {
     });
 
   const addressOptions = CanFundAddresses?.map((address: string) => ({ value: address, label: address })) || [];
-  useEffect(() => {
-    if (addressOptions.length === 1) {
-      setSelectedAddress(addressOptions[0]?.value);
 
-    } else {
-      setSelectedAddress("No Addresses Found");
+  useEffect (() => {
+    if (!selectedAddress) {
+      setSelectedAddress(addressOptions[0]?.value);
     }
-  }, [addressOptions]);
+  });
 
   const navigateToCreate = () => {
     router.push("/create");
@@ -54,6 +52,10 @@ const Home: NextPage = () => {
     if (selectedAddress) {
       router.push(`/CanFund/${selectedAddress}`);
     }
+  };
+
+  const handleSelectChange = (selectedOption) => {
+    setSelectedAddress(selectedOption.value);
   };
 
 
@@ -86,9 +88,9 @@ const Home: NextPage = () => {
         <Window>
         <label>Select Address:</label>
         <Select
-  options={addressOptions?.length === 0 ? [{ value: "", label: "No Address Found" }] : addressOptions}
+  options={addressOptions.length === 0 ? [{ value: "", label: "No Address Found" }] : addressOptions}
   value={selectedAddress}
-  onChange={(value) => setSelectedAddress(value)}
+  onChange={handleSelectChange}
   width={200}
 />
 

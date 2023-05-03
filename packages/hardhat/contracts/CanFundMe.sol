@@ -8,9 +8,9 @@ import "./CanFundMeFactory.sol";
 
 contract CanFundMe {
     
-    address immutable public ALLOWED_TOKEN_ADDRESS = 0x4e71A2E537B7f9D9413D3991D37958c0b5e1e503;
+    address immutable public ALLOWED_TOKEN_ADDRESS = 0x03F734Bd9847575fDbE9bEaDDf9C166F880B5E5f;
 
-    bool public accept_note;
+    IERC20 public noteToken;
 
     /// @notice A record of each accounts delegate
     mapping (address => uint256) public contributions;
@@ -20,15 +20,11 @@ contract CanFundMe {
     /// @notice The platform address
     address public immutable platform_address = 0xcd258fCe467DDAbA643f813141c3560FF6c12518;
 
+    CanFundMeFactory private immutable canFundMeFactory;
+
     address public benificiary;
 
-    /// @notice the factory address 
-    address immutable public factory;
-
     address immutable public owner;
-
-    /// @notice a counter for the number of contributors
-    uint256 public contributors;
 
     /// @notice the threshold for the contract in wei
     uint256 public immutable threshold;
@@ -42,8 +38,6 @@ contract CanFundMe {
 
     uint256 public platform_fee;
 
-    CanFundMeFactory private immutable canFundMeFactory ;
-
     bool public threshold_crossed;
 
     /// Events
@@ -55,9 +49,6 @@ contract CanFundMe {
 
     /// @notice isnt the allowed token error
     error IsntAllowedToken();
-
-    /// @notice no ERC20 accepted 
-    error NoERC20Accepted();
 
     /// @notice no funds sent error
     error NoFundsSent();
@@ -80,28 +71,23 @@ contract CanFundMe {
     /// @notice time limit too long
     error TimeLimitTooLong();
 
-    constructor (address CanFundFactory, address _benificiary, uint256 _threshold, uint256 _time_limit, uint256 _note_threshold, bool _accept_note, uint16 gitcoinScore) {
+    constructor (address CanFundFactory, address _benificiary, uint256 _threshold, uint256 _time_limit, uint256 _note_threshold, uint16 gitcoinScore) {
         if (gitcoinScore > gitcoin_scoreThreshold) {
             platform_fee = 0;
         }
 
+        //initialize the token
+        noteToken = IERC20(ALLOWED_TOKEN_ADDRESS);
         // set the platform fee to 5%
         platform_fee = 5;
-        
         // set the owner
         owner = tx.origin;
         // set the threshold in ether
         threshold = _threshold;
-        // set the factory address
-        factory = CanFundFactory;
-
-        //
-        canFundMeFactory = CanFundMeFactory(CanFundFactory);
         // set the note_threshold in tokens
         note_threshold = _note_threshold;
 
-        // set the accept_note bool
-        accept_note = _accept_note;
+        canFundMeFactory = CanFundMeFactory(CanFundFactory);
 
         benificiary = _benificiary;
         // set the time limit in seconds
@@ -118,11 +104,16 @@ contract CanFundMe {
 
     /// @notice view function that returns true/false if the threshold has been met
     function funded() public view returns (bool) {
-    if (address(this).balance >= threshold || IERC20(ALLOWED_TOKEN_ADDRESS).balanceOf(address(this)) >= note_threshold) {
+    if (address(this).balance >= threshold || noteToken.balanceOf(address(this)) >= note_threshold) {
         return true;
     } else {
         return false;
     }
+    }
+
+    /// @notice pure function to return the address balance of the token
+    function token_balance() public view returns (uint256) {
+    return noteToken.balanceOf(address(this));
     }
 
     /// @notice function to fund the contract
@@ -131,7 +122,6 @@ contract CanFundMe {
         revert NoFundsSent();
     }
     contributions[msg.sender] += msg.value;
-    contributors++;
 
     //check if the threshold has been met
     if (funded() == true) {
@@ -196,24 +186,10 @@ contract CanFundMe {
         payable(platform_address).transfer(_platform_fee);
     }
     }
-    
 
-    function contributeWithToken(address tokenAddress, uint256 amount) external {
-    if (accept_note == false) {
-        revert NoERC20Accepted();
-    }
-    if (tokenAddress != ALLOWED_TOKEN_ADDRESS) {
-        revert IsntAllowedToken();
-    }
-    IERC20 token = IERC20(tokenAddress);
-
-    //set allowance to the contract address
-    token.approve(address(this), amount);
-
-    token.transferFrom(msg.sender, address(this), amount);
-
+    function contributeWithToken(uint256 amount) external {
     note_contributions[msg.sender] += amount;
-    contributors++;
+    noteToken.transferFrom(msg.sender, address(this), amount);
 
     //check if the threshold has been met
     if (funded() == true) {
@@ -223,10 +199,7 @@ contract CanFundMe {
     emit NoteFunded(msg.sender, amount);
     }
 
-    function withdraw_threshold_missed_with_token(address tokenAddress) external {
-    if (accept_note == false) {
-        revert NoERC20Accepted();
-    }
+    function withdraw_threshold_missed_with_token() public {
     if (threshold_crossed != true) {
         revert ThresholdNotMet();
     }
@@ -237,19 +210,14 @@ contract CanFundMe {
         revert TimeLimitNotMet();
     }
 
-    IERC20 token = IERC20(tokenAddress);
-
     uint256 amount = note_contributions[msg.sender];
 
     note_contributions[msg.sender] = 0;
 
-    token.transfer(msg.sender, amount);
+    noteToken.transfer(msg.sender, amount);
     }
 
-    function withdraw_threshold_met_with_token(address tokenAddress) external {
-    if (accept_note == false) {
-        revert NoERC20Accepted();
-    }
+    function withdraw_threshold_met_with_token() public {
     if (msg.sender != owner) {
         revert NotOwner();
     }
@@ -257,17 +225,15 @@ contract CanFundMe {
         revert ThresholdNotMet();
     }
 
-    IERC20 token = IERC20(tokenAddress);
-
     // withdraw the full amount from the contract to the owner, minus 5% fee to platform
-    uint256 note_balance = token.balanceOf(address(this));
+    uint256 note_balance = token_balance();
     uint256 _platform_fee = (note_balance * (platform_fee)) / 100;
     uint256 amount = (note_balance - _platform_fee);
 
-    token.transfer(msg.sender, amount);
+    noteToken.transfer(benificiary, amount);
 
     if (platform_fee > 0) {
-    token.transfer(platform_address, _platform_fee);
+    noteToken.transfer(platform_address, _platform_fee);
     }
 
 }

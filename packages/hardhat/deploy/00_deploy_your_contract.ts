@@ -21,6 +21,18 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
+  /*
+
+  const Note_Acceptor_contract = await deploy("Note_Acceptor", {
+    from: deployer,
+    args: ['0x03F734Bd9847575fDbE9bEaDDf9C166F880B5E5f'],
+    log: true,
+    autoMine: true,
+  });
+
+  */
+
+
   const verifier_contract = await deploy("Eippy", {
     from: deployer,
     args: ["CanFundMeFactory", "1"],
@@ -52,7 +64,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   await deploy("CanFundMe", {
     from: deployer,
     // Contract constructor arguments
-    args: [beans.address, "0xcd258fCe467DDAbA643f813141c3560FF6c12518", 100, 10000, 10000, true, 0],
+    args: [beans.address, "0xcd258fCe467DDAbA643f813141c3560FF6c12518", 100, 10000, 10000, 0],
     log: true,
     autoMine: true,
   });
@@ -60,6 +72,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   // Get the deployed contract
   // const yourContract = await hre.ethers.getContract("YourContract", deployer);
 };
+
 
 
 export default deployYourContract;

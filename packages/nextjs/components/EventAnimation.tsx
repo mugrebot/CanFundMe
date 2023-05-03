@@ -40,7 +40,7 @@ useScaffoldEventSubscriber({
         {
           type: "NoteFunded",
           contributor,
-          amount: Number(amount)/10^18,
+          amount: Number(amount)* 10**-18,
           transactionHash: event?.transactionHash,
         },
       ]);
@@ -80,9 +80,9 @@ useScaffoldEventSubscriber({
                             .filter((_, index) => index % 3 === i)
                             .map((event) => (
                               <span key={event.transactionHash}>
-                                {event.type}: Contributor:{event.contributor}
+                              Contributor -- {event.contributor}
                                 <br />
-                             Amount:{(event.amount)} Wei
+                             Amount -- {(event.amount)} NOTE
                               </span>
                             ))
                         : " "}

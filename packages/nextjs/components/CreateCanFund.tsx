@@ -18,9 +18,9 @@ const CreateCanFund: React.FC = () => {
   const [goal, setGoal] = useState();
   const [timelimit, setTimelimit] = useState();
   const [benificiaryInput, setBenificiaryInput] = useState("");
-  const [selectedAddress, setSelectedAddress] = useState();
+  const [selectedAddress, setSelectedAddress] = useState("");
+
   const [_note_threshold, setNoteThreshold] = useState(undefined || 0);
-  const [_accept_note, setAcceptNote] = useState(true || false);
 
   const window1Ref = React.useRef(null);
   const window2Ref = React.useRef(null);
@@ -38,7 +38,7 @@ const CreateCanFund: React.FC = () => {
     functionName: "createCanFundMe",
     address: factory.data?.address,
     abi: deployedContractData?.abi as Abi,
-    args: [benificiaryInput, goal, timelimit, _note_threshold, _accept_note],
+    args: [benificiaryInput, goal, timelimit, _note_threshold],
   });
 
   const { data: CanFundAddresses } = useScaffoldContractRead({
@@ -49,15 +49,12 @@ const CreateCanFund: React.FC = () => {
 
   const addressOptions = CanFundAddresses?.map((address: string) => ({ value: address, label: address })) || [];
 
-  useEffect(() => {
-    if (addressOptions.length === 1) {
-      setSelectedAddress(addressOptions[0].value);
-    } else {
-      setSelectedAddress("No Addresses Found");
+  useEffect (() => {
+    if (!selectedAddress) {
+      setSelectedAddress(addressOptions[0]?.value);
     }
-  }, [addressOptions]);
+  });
 
-  console.log(selectedAddress);
 
   const router = useRouter();
 
@@ -65,6 +62,10 @@ const CreateCanFund: React.FC = () => {
     if (selectedAddress) {
       router.push(`/Manage/${selectedAddress}`);
     }
+  };
+
+  const handleSelectChange = (selectedOption) => {
+    setSelectedAddress(selectedOption.value);
   };
 
   const [createWindowPosition, setCreateWindowPosition] = useState({ x: 50, y: 50 });
@@ -126,8 +127,6 @@ const CreateCanFund: React.FC = () => {
           <label>Note Goal</label>
           <IntegerInput value={_note_threshold} onChange={(value) => setNoteThreshold(value)} />
           <div>
-            <label>Accept Note?</label>
-            <Checkbox checked={_accept_note} onChange={(value) => setAcceptNote(!_accept_note)} />
 
             <Button onClick={writeAsync} disabled={isLoading}>
               {isLoading ? "Creating..." : "Create"}
@@ -144,11 +143,11 @@ const CreateCanFund: React.FC = () => {
           <div>
             <label>Select Address:</label>
             <Select
-              options={addressOptions.length === 0 ? [{ value: "", label: "No Address Found" }] : addressOptions}
-              value={selectedAddress}
-              onChange={(value) => setSelectedAddress(value)}
-              width={200}
-            />
+  options={addressOptions.length === 0 ? [{ value: "", label: "No Address Found" }] : addressOptions}
+  value={selectedAddress}
+  onChange={handleSelectChange}
+  width={200}
+/>
 
             <Button
               onClick={handleManageClick}

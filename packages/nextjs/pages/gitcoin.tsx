@@ -12,7 +12,6 @@ import { recoverTypedSignature_v4 } from 'eth-sig-util';
 import * as sigUtil from 'eth-sig-util';
 import { bufferToHex } from 'ethereumjs-util';
 
-
 // these lines read the API key and scorer ID from your .env.local file
 const APIKEY = "716FoKqX.jZD7WuTQhn4pbiEv1cjMsbZEdQqVJemv";
 const SCORER_ID = "188";
@@ -149,6 +148,14 @@ export default function Passport() {
       const signature = await signer?._signTypedData(domain, types, message);
 
       console.log("TYPED SIGNED:" + signature);
+
+        // Parse the signature and extract v, r, and s
+      const parsedSignature = ethers.utils.splitSignature(signature);
+      const { v, r, s } = parsedSignature;
+
+      console.log("v:", v);
+      console.log("r:", r);
+      console.log("s:", s);
 
       const signerAddress = ethers.utils.verifyTypedData(domain, types, message, signature);
 

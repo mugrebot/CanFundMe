@@ -29,8 +29,8 @@ event CanFundMeCreated(address CanFundMeAddress, address owner);
 
 
 
-function createCanFundMe(address beneficiary, uint256 _threshold, uint256 _time_limit, uint256 _note_threshold, bool _accept_note) external noDelegateCall returns (address) {
-    CanFundMe newCanFundMe = new CanFundMe(address(this), beneficiary, _threshold, _time_limit, _note_threshold, _accept_note, 0);
+function createCanFundMe(address beneficiary, uint256 _threshold, uint256 _time_limit, uint256 _note_threshold) external noDelegateCall returns (address) {
+    CanFundMe newCanFundMe = new CanFundMe(address(this), beneficiary, _threshold, _time_limit, _note_threshold, 0);
     canFundMeCount[msg.sender] += 1;
     canFundMeAddresses[msg.sender].push(address(newCanFundMe));
 
@@ -44,8 +44,8 @@ function createCanFundMe(address beneficiary, uint256 _threshold, uint256 _time_
     
 }
 
-function createCanFundMeGitcoin(address beneficiary, uint256 _threshold, uint256 _time_limit, uint256 _note_threshold, bool _accept_note, uint16 gitcoinScore) external noDelegateCall returns (address) {
-    CanFundMe newCanFundMe = new CanFundMe(address(this), beneficiary, _threshold, _time_limit, _note_threshold, _accept_note, gitcoinScore);
+function createCanFundMeGitcoin(address beneficiary, uint256 _threshold, uint256 _time_limit, uint256 _note_threshold, uint16 gitcoinScore) external noDelegateCall returns (address) {
+    CanFundMe newCanFundMe = new CanFundMe(address(this), beneficiary, _threshold, _time_limit, _note_threshold, gitcoinScore);
     canFundMeCount[msg.sender] += 1;
     canFundMeAddresses[msg.sender].push(address(newCanFundMe));
 
