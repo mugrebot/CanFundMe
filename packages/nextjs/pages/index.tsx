@@ -58,6 +58,10 @@ const Home: NextPage = () => {
     setSelectedAddress(selectedOption.value);
   };
 
+  const handleGitcoinClick = () => {
+    router.push('gitcoin');
+  };
+
 
 
 
@@ -84,6 +88,12 @@ const Home: NextPage = () => {
         >
           <span className="link">Manage CanFund</span>
         </Window>
+        <Window
+          className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs cursor-pointer"
+          onClick={handleGitcoinClick}
+        >
+          <span className="link">Submit Gitcoin Passport</span>
+        </Window>
         {/* Navigation links end */}
         <Window>
         <label>Select Address:</label>
@@ -93,13 +103,6 @@ const Home: NextPage = () => {
   onChange={handleSelectChange}
   width={200}
 />
-
-<Button
-  onClick={handleManageClick}
-  disabled={!selectedAddress || addressOptions.length === 0} 
->
-  Manage
-</Button>
       </Window>
     </div>
     </div>

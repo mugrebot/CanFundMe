@@ -4,13 +4,17 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { ethers } from "ethers";
 import { useAccount, useConnect, useProvider, useSigner } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
-import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
-import { hashTypedData } from "@ethersproject/hash";
+import { useDeployedContractInfo} from "~~/hooks/scaffold-eth";
+
 import { defaultAbiCoder } from "@ethersproject/abi";
 import { Signer } from "ethers";
 import { recoverTypedSignature_v4 } from 'eth-sig-util';
 import * as sigUtil from 'eth-sig-util';
 import { bufferToHex } from 'ethereumjs-util';
+import {Button, Window } from "react95";
+import { useScaffoldContract, useScaffoldContractWrite, useScaffoldContractRead } from "~~/hooks/scaffold-eth";
+import { ContractAbi, ContractName, UseScaffoldWriteConfig } from "~~/utils/scaffold-eth/contract";
+import { Abi, ExtractAbiFunctionNames } from "abitype";
 
 // these lines read the API key and scorer ID from your .env.local file
 const APIKEY = "716FoKqX.jZD7WuTQhn4pbiEv1cjMsbZEdQqVJemv";
@@ -267,9 +271,26 @@ export default function Passport() {
     },
   };
 
+  //call function on canFundMeFactory contract: methodname = verifyPassport
+  //passes in score of user and the signature
+  const factory = useScaffoldContract({
+    contractName: "CanFundMeFactory",
+  });
+  const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
+
+  const { writeAsync, isLoading } = useScaffoldContractWrite({
+    contractName: "CanFundMeFactory",
+    functionName: "verifyPassport",
+    address: factory.data?.address,
+    abi: deployedContractData?.abi as Abi,
+    args: [score, _signature],
+  });
+
+
   return (
     /* this is the UI for the app */
     <div style={styles.main}>
+      <Window>
       <h1 style={styles.heading}>Gitcoin Passport Scorer 🫶</h1>
       <p style={styles.configurePassport}>
         Configure your passport{" "}
@@ -283,9 +304,9 @@ export default function Passport() {
 
       <div style={styles.buttonContainer}>
         {!isConnected && (
-          <button style={styles.buttonStyle} onClick={_connect}>
+          <Button style={styles.buttonStyle} onClick={_connect}>
             Connect Wallet
-          </button>
+          </Button>
         )}
         {score && (
           <div>
@@ -305,16 +326,19 @@ export default function Passport() {
         )}
         {isConnected && (
           <div style={styles.buttonContainer}>
-            <button style={styles.buttonStyle} onClick={submitPassport}>
+            <Button style={styles.buttonStyle} onClick={submitPassport}>
               Submit Passport
-            </button>
-            <button style={styles.buttonStyle} onClick={() => checkPassport()}>
+            </Button>
+            <Button style={styles.buttonStyle} onClick={() => checkPassport()}>
               Check passport score
-            </button>
+            </Button>
 
-            <button style={styles.buttonStyle} onClick={() => GetSignedScore()}>
+            <Button style={styles.buttonStyle} onClick={() => GetSignedScore()}>
               Get signed score
-            </button>
+            </Button>
+            <Button style={styles.buttonStyle} disabled={isLoading} onClick={() => writeAsync()}>
+              Verify Passport
+            </Button>
           </div>
         )}
         {noScoreMessage && <p style={styles.noScoreMessage}>{noScoreMessage}</p>}
@@ -323,12 +347,12 @@ export default function Passport() {
             <p style={styles.noScoreMessage}>
               Your signature is: <br />
               <p style={truncate}>{_signature}</p>
-              <button
+              <Button
                 onClick={() => copyToClipboard(_signature)}
                 style={{ border: "none", background: "none", cursor: "pointer" }}
               >
                 <CopyIcon className="ml-1 cursor-pointer h-4 w-4" />
-              </button>
+              </Button>
               {toastVisible && (
                 <div
                   style={{
@@ -357,6 +381,7 @@ export default function Passport() {
           </div>
         )}
       </div>
+      </Window>
     </div>
   );
 }
