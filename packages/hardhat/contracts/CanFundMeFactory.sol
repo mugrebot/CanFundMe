@@ -11,9 +11,9 @@ contract CanFundMeFactory is NoDelegateCall {
 
 
         address public owner;
-        mapping (uint256 => address[]) public created_canFundMe;
         mapping (address => uint256) public canFundMeCount;
         mapping (address=> address[]) public canFundMeAddresses;
+        address[] public canFundMeAddressesAll;
         /// @notice Eippy contract
         Eippy private eippy;
         mapping (address => uint16) public gitcoin_scores;
@@ -33,10 +33,8 @@ function createCanFundMe(address beneficiary, uint256 _threshold, uint256 _time_
     CanFundMe newCanFundMe = new CanFundMe(address(this), beneficiary, _threshold, _time_limit, _note_threshold, 0);
     canFundMeCount[msg.sender] += 1;
     canFundMeAddresses[msg.sender].push(address(newCanFundMe));
+    canFundMeAddressesAll.push(address(newCanFundMe));
 
-    
-
-    created_canFundMe[canFundTotal].push(address(newCanFundMe));
     canFundTotal += 1;
 
     emit CanFundMeCreated(address(newCanFundMe), msg.sender);
@@ -49,7 +47,7 @@ function createCanFundMeGitcoin(address beneficiary, uint256 _threshold, uint256
     canFundMeCount[msg.sender] += 1;
     canFundMeAddresses[msg.sender].push(address(newCanFundMe));
 
-    created_canFundMe[canFundTotal].push(address(newCanFundMe));
+    canFundMeAddressesAll.push(address(newCanFundMe));
     canFundTotal += 1;
     emit CanFundMeCreated(address(newCanFundMe), msg.sender);
     return address(newCanFundMe);
