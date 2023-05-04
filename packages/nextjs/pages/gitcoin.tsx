@@ -18,9 +18,9 @@ import { Abi, ExtractAbiFunctionNames } from "abitype";
 import { useDarkMode } from "usehooks-ts";
 import { StyledButton, StyledWindow, StyledSelect, StyledWindowHeader } from "~~/components/styledcomponents";
 
-// these lines read the API key and scorer ID from your .env.local file
-const APIKEY = "716FoKqX.jZD7WuTQhn4pbiEv1cjMsbZEdQqVJemv";
-const SCORER_ID = "188";
+// these lines read the API key and scorer ID from your .env.local file doesnt work
+const APIKEY = process.env.NEXT_PUBLIC_GITCOIN_API_KEY;
+const SCORER_ID = process.env.NEXT_PUBLIC_SCORER_ID;
 
 // endpoint for submitting passport
 const SUBMIT_PASSPORT_URI = "https://api.scorer.gitcoin.co/registry/submit-passport";
@@ -74,6 +74,19 @@ export default function Passport() {
       console.log("error connecting...");
     }
   }
+
+  async function getSigningMessage() {
+    try {
+      const response = await fetch(SIGNING_MESSAGE_URI, {
+        headers,
+      });
+      const json = await response.json();
+      return json;
+    } catch (err) {
+      console.log("error: ", err);
+    }
+  }
+
 
   /* todo connect user's wallet */
 
@@ -267,13 +280,16 @@ export default function Passport() {
       marginTop: 15,
     },
     signatureContainer: {
-      display: "inline-flex",
+      display: "flex",
       flexDirection: "column",
-      alignItems: "flex-start",
+      alignItems: "center",
       background: "transparent",
       padding: "8px",
       border: "1px solid #ccc",
       borderRadius: "4px",
+      margin: "0 auto", // Add this line
+      maxWidth: "90%", // Add this line
+      
     },
     noScoreMessage: {
       margin: 0,
@@ -352,7 +368,7 @@ export default function Passport() {
         )}
         {noScoreMessage && <p style={styles.noScoreMessage}>{noScoreMessage}</p>}
         {_signature && (
-          <div style={styles.signatureContainer}>
+          <div style={styles.main}>
             <p style={styles.noScoreMessage}>
               Your signature is: <br />
               <p style={truncate}>{_signature}</p>

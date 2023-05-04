@@ -79,6 +79,10 @@ const Home: NextPage = () => {
     router.push('gitcoin');
   };
 
+  const handleRoundsClick = () => {
+    router.push('rounds');
+  };
+
 
   const randomPosition = () => {
     return Math.floor(Math.random() * 80) + 10;
@@ -123,6 +127,14 @@ const Home: NextPage = () => {
               onClick={handleGitcoinClick}
             >
               <span>Submit Gitcoin Passport</span>
+            </StyledButton>
+            <StyledButton
+                           isDarkMode={isDarkMode}
+                           style={{margin: 15, padding: 10 }}
+              className="window-item flex flex-col items-center cursor-pointer"
+              onClick={handleRoundsClick}
+            >
+              <span>View Rounds</span>
             </StyledButton>
           </div>
           <div className="text-center"

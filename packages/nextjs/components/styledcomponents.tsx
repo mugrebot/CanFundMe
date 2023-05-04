@@ -33,3 +33,36 @@ export const StyledTextInput = styled(TextInput)<DarkModeProps>`
   background-color: ${({ isDarkMode }) => (isDarkMode ? "#00190f" : "#06fc99")};
   color: ${({ isDarkMode }) => (isDarkMode ? "#06fc99" : "#00190f")};
 `;
+
+export const StyledScrollView = styled.div<DarkModeProps>`
+  overflow-y: scroll;
+  overflow-x: scroll;
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+
+  // For Firefox
+  scrollbar-color: #00190f "#06fc99";
+
+  // For Webkit-based browsers
+  &::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${({ isDarkMode }) => (isDarkMode ? "#00190f" : "#06fc99")};
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ isDarkMode }) => (isDarkMode ? "#06fc99" : "#00190f" )};
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: ${({ isDarkMode }) => (isDarkMode ? "#00190f": "#06fc99")};
+  }
+`;
+
+
