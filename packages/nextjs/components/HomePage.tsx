@@ -71,7 +71,7 @@ export const HomePage = () => {
 
   return (
     <Wrapper>
-      <AppBar>
+      <AppBar className="yeet">
         <Toolbar style={{ justifyContent: "space-between" }}>
 
             <Button
@@ -106,7 +106,7 @@ export const HomePage = () => {
               </MenuList>
             )}
           <TextInput placeholder="Search..." width={150} />
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div className="yeet" style={{ display: "flex", alignItems: "center" }}>
             <RainbowKitCustomConnectButton />
             <FaucetButton />
           </div>

@@ -61,7 +61,7 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
   }, [isDarkMode]);
 
   return (
-    <div>
+    <>
       <GlobalStyles />
       <ThemeProvider theme={original}>
         <WagmiConfig client={wagmiClient}>
@@ -80,7 +80,7 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
           </RainbowKitProvider>
         </WagmiConfig>
       </ThemeProvider>
-    </div>
+    </>
   );
 };
 
