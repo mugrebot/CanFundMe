@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { EventAnimation } from "./EventAnimation";
 import { EtherInput, IntegerInput } from "./scaffold-eth";
@@ -18,6 +18,7 @@ import IERC20_ABI from "./IERC20.json";
 import { useDarkMode } from "usehooks-ts";
 import { StyledButton, StyledWindow, StyledSelect, StyledWindowHeader } from "~~/components/styledcomponents";
 import { Abi, ExtractAbiFunctionNames } from "abitype";
+import { useEffect } from "react";
 
 // Add these styled components
 const Wrapper = styled.div`
