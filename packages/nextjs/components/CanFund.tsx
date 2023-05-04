@@ -18,7 +18,6 @@ import IERC20_ABI from "./IERC20.json";
 import { useDarkMode } from "usehooks-ts";
 import { StyledButton, StyledWindow, StyledSelect, StyledWindowHeader } from "~~/components/styledcomponents";
 import { Abi, ExtractAbiFunctionNames } from "abitype";
-import { useEffect } from "react";
 
 // Add these styled components
 const Wrapper = styled.div`
@@ -32,8 +31,6 @@ const Wrapper = styled.div`
 const ProgressBarContainer = styled.div`
   max-width: 200px;
 `;
-
-
 
 export const CanFund = ({ contractAddress }) => {
   const [amount, setAmount] = useState();
