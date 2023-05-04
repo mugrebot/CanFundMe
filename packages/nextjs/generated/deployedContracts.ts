@@ -5,7 +5,7 @@ const contracts = {
       chainId: "7701",
       contracts: {
         Eippy: {
-          address: "0xa90e6DEd87ed29D9d99eb0CbDb813081BEE689A8",
+          address: "0x9Be87C9088104696c1b53b164219BEBC9A240d7d",
           abi: [
             {
               inputs: [
@@ -123,7 +123,7 @@ const contracts = {
           ],
         },
         YourContract: {
-          address: "0x3Fc055da59f95CEC463ff07f16798c0274A5826e",
+          address: "0xaEcb0aFcca3cc9a06199B1f84D6Ff97d4b77Dc34",
           abi: [
             {
               inputs: [
@@ -265,7 +265,7 @@ const contracts = {
           ],
         },
         CanFundMeFactory: {
-          address: "0x57a39121159d46326279D81b3CFA774Bd6B5ed1b",
+          address: "0xdcF8E64511d7b477fd8c65575F8fC1FC455b0bED",
           abi: [
             {
               inputs: [
@@ -573,7 +573,7 @@ const contracts = {
           ],
         },
         CanFundMe: {
-          address: "0x32B8bA2B723C94bbD8407E241766F29d444C501D",
+          address: "0xA097Fa01ecB8E4EAb1aF1c1FE9db3333fCfb5749",
           abi: [
             {
               inputs: [
@@ -785,9 +785,9 @@ const contracts = {
               name: "gitcoin_scoreThreshold",
               outputs: [
                 {
-                  internalType: "uint16",
+                  internalType: "uint8",
                   name: "",
-                  type: "uint16",
+                  type: "uint8",
                 },
               ],
               stateMutability: "view",
@@ -869,9 +869,9 @@ const contracts = {
               name: "platform_fee",
               outputs: [
                 {
-                  internalType: "uint256",
+                  internalType: "uint8",
                   name: "",
-                  type: "uint256",
+                  type: "uint8",
                 },
               ],
               stateMutability: "view",

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import CanFundMe_ABI from "../../hardhat/artifacts/contracts/CanFundMe.sol/CanFundMe.json";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { EventAnimation } from "./EventAnimation";
 import { EtherInput, IntegerInput } from "./scaffold-eth";
 import { ethers, utils } from "ethers";
@@ -17,6 +17,7 @@ import {
 import IERC20_ABI from "../../hardhat/artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json";
 import { useDarkMode } from "usehooks-ts";
 import { StyledButton, StyledWindow, StyledSelect, StyledWindowHeader } from "~~/components/styledcomponents";
+import { Abi, ExtractAbiFunctionNames } from "abitype";
 
 // Add these styled components
 const Wrapper = styled.div`
@@ -55,14 +56,16 @@ export const CanFund = ({ contractAddress }) => {
 
   const { address: account } = useAccount();
 
+  const { data: deployedContractData } = useDeployedContractInfo("CanFundMe");
 
+  const CanFundMeAbi = deployedContractData?.abi as Abi;
 
   const { writeAsync: fundMeAsync, isLoading: fundMeIsLoading } = useScaffoldContractWrite({
     contractName: "CanFundMe",
     functionName: "fundMe",
     value: amount && amount?.toString(),
     address: contractAddress,
-    abi: CanFundMeABI,
+    abi: CanFundMeAbi,
   });
 
   const { writeAsync: contributeWithTokenAsync, isLoading: contributeWithTokenIsLoading } = useScaffoldContractWrite({
