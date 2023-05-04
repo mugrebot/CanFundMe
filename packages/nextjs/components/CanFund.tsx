@@ -14,7 +14,7 @@ import {
   useScaffoldEventHistory,
   useScaffoldEventSubscriber,
 } from "~~/hooks/scaffold-eth";
-import IERC20_ABI from "../../hardhat/artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json";
+import IERC20_ABI from "./IERC20.json";
 import { useDarkMode } from "usehooks-ts";
 import { StyledButton, StyledWindow, StyledSelect, StyledWindowHeader } from "~~/components/styledcomponents";
 import { Abi, ExtractAbiFunctionNames } from "abitype";

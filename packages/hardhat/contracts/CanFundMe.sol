@@ -7,12 +7,14 @@ import "./CanFundMeFactory.sol";
 
 
 contract CanFundMe {
-    
+
+    ////VARIABLES///
+
+    /// @notice the address of the token that is allowed to be used to fund the contract
     address immutable public ALLOWED_TOKEN_ADDRESS = 0x03F734Bd9847575fDbE9bEaDDf9C166F880B5E5f;
 
+    /// @notice IERC20 interface for the token
     IERC20 public noteToken;
-
-    
 
     /// @notice A record of each accounts delegate
     mapping (address => uint256) public contributions;
@@ -22,10 +24,13 @@ contract CanFundMe {
     /// @notice The platform address
     address public immutable platform_address = 0xcd258fCe467DDAbA643f813141c3560FF6c12518;
 
+    /// @notice the CanFundMeFactory contract
     CanFundMeFactory private immutable canFundMeFactory;
 
+    /// @notice the benificiary of the contract
     address public benificiary;
 
+    /// @notice the owner of the contract
     address immutable public owner;
 
     /// @notice the threshold for the contract in wei
@@ -34,17 +39,24 @@ contract CanFundMe {
     /// @notice the threshold for the contract in ERC20 tokens
     uint256 public immutable note_threshold;
 
+    /// @notice the time limit for the contract in seconds
     uint256 public time_limit;
 
+    /// @notice the threshold for the contract in wei
     uint8 public gitcoin_scoreThreshold = 10;
 
+    /// @notice the platform fee
     uint8 public platform_fee;
 
+    /// @notice the threshold crossed bool
     bool public threshold_crossed;
 
     /// Events
+
+    /// @notice event for when the contract is funded
     event Funded(address contributor, uint256 amount);
 
+    /// @notice event for when the is funded with erc20 token
     event NoteFunded(address contributor, uint256 amount);
 
     // Errors 
