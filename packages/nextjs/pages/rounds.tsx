@@ -1,6 +1,6 @@
 import React from "react";
 import dynamic from "next/dynamic";
-import { useFactoryBounce } from "../components/FactoryBounce";
+import { FactoryBounce } from "../components/FactoryBounce";
 import { Abi } from "abitype";
 import { WindowContent } from "react95";
 import { useDarkMode } from "usehooks-ts";
@@ -30,7 +30,7 @@ const useRounds: React.FC = () => {
       <StyledWindow isDarkMode={isDarkMode}>
         <WindowContent>
           <StyledScrollView isDarkMode={isDarkMode} style={{ width: "500px", height: "700px" }}>
-            {totalCanFundMes && Number(totalCanFundMes) > 0 && <useFactoryBounce index={Number(totalCanFundMes)} />}
+            {totalCanFundMes && Number(totalCanFundMes) > 0 && <FactoryBounce index={Number(totalCanFundMes)} />}
             {!totalCanFundMes && <h1>There are no CanFundMes yet!</h1>}
           </StyledScrollView>
         </WindowContent>

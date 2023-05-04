@@ -27,7 +27,7 @@ interface FactoryBounceProps {
     index: number;
 }
 
-export const useFactoryBounce: React.FC<FactoryBounceProps> = ({ index }) => {
+export const FactoryBounce: React.FC<FactoryBounceProps> = ({ index }) => {
 
     const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
 
@@ -52,14 +52,10 @@ export const useFactoryBounce: React.FC<FactoryBounceProps> = ({ index }) => {
 
     return (
         <GridContainer>
-            
-            {addresses.map((address) => (
-                <ContractBounce address={address} />
-            ))}
-            
-        </GridContainer>
+        {[...new Set(addresses.filter((address) => address !== undefined))].map((address) => (
+          <ContractBounce key={address} address={address} />
+        ))}
+      </GridContainer>
     );
 
 };
-
-export default useFactoryBounce;
