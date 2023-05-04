@@ -15,6 +15,8 @@ import {
   useScaffoldEventSubscriber,
 } from "~~/hooks/scaffold-eth";
 import IERC20_ABI from "../../hardhat/artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json";
+import { useDarkMode } from "usehooks-ts";
+import { StyledButton, StyledWindow, StyledSelect, StyledWindowHeader } from "~~/components/styledcomponents";
 
 // Add these styled components
 const Wrapper = styled.div`
@@ -30,10 +32,13 @@ const ProgressBarContainer = styled.div`
 `;
 
 
+
 export const CanFund = ({ contractAddress }) => {
   const [amount, setAmount] = useState();
-  const [_accept_note, setAcceptNote] = useState(true || false);
+  const [_accept_note, setAcceptNote] = useState(false);
   const [txHash, setTxHash] = useState("");
+
+  const {isDarkMode} = useDarkMode();
 
   // Create a useRef for each draggable Window
   const window1Ref = React.useRef(null);
@@ -49,6 +54,7 @@ export const CanFund = ({ contractAddress }) => {
   const provider = useProvider();
 
   const { address: account } = useAccount();
+
 
 
   const { writeAsync: fundMeAsync, isLoading: fundMeIsLoading } = useScaffoldContractWrite({
@@ -96,6 +102,14 @@ export const CanFund = ({ contractAddress }) => {
     abi: CanFundMeABI,
   });
 
+  const { data: threshold_crossed } = useScaffoldContractRead({
+    contractName: "CanFundMe",
+    functionName: "threshold_crossed",
+    address: contractAddress,
+    abi: CanFundMeABI,
+  });
+
+
   const { writeAsync: gitcoin, isLoading: gitcoinLoading } = useScaffoldContractWrite({
     contractName: "CanFundMe",
     functionName: "updateFeeStatusGitcoin",
@@ -115,10 +129,12 @@ export const CanFund = ({ contractAddress }) => {
 
   const contract = new ethers.Contract(contractAddress, CanFundMeABI, provider);
 
+  
+
   const fetchContractBalance = async () => {
     const balance = await contract?.provider.getBalance(contractAddress);
     if (balance) {
-      const balance_ether = utils.formatEther(balance);
+      const balance_ether = utils.formatUnits(balance, 'ether');
       setContractBalance(balance_ether);
     }
   };
@@ -150,9 +166,13 @@ export const CanFund = ({ contractAddress }) => {
   };
 
   const calculateProgress = (balance, threshold) => {
-    const progress = (parseFloat(balance) / parseFloat(utils.formatEther(threshold))) * 100;
-    return Math.min(progress, 100); // Clamp the value between 0 and 100
+    const progress_canto = (1 - (Number(threshold)*10**-18 - balance)/(Number(threshold)*10**-18))*100;
+    const progress_note = (1 - (Number(note_threshold) - Number(note_balance))/(Number(note_threshold)))*100; 
+    //return the larger value of the two
+    const progress = Math.max(progress_canto, progress_note);
+    return progress.toFixed(0);
   };
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -260,45 +280,49 @@ export const CanFund = ({ contractAddress }) => {
       </div>
       <div style={{ zIndex: 0 }}>
         <Draggable nodeRef={window2Ref} bounds="body" defaultPosition={timeRemainingWindowPosition}>
-          <Window ref={window2Ref}>
+          <StyledWindow isDarkMode={isDarkMode} ref={window2Ref}>
             <div>
               <h3>Time Remaining:</h3>
               {time_limit && getTimeRemainingInSeconds(time_limit) > 0 && (
-                <Counter minLength={8} value={getTimeRemainingInSeconds(time_limit)} />
+                <Counter minLength={11} value={getTimeRemainingInSeconds(time_limit)} />
               )}
-              {time_limit && getTimeRemainingInSeconds(time_limit) < 0 && <Counter minLength={8} value={0} />}
+              {time_limit && getTimeRemainingInSeconds(time_limit) < 0 && <Counter minLength={11} value={0} />}
             </div>
-          </Window>
+          </StyledWindow>
         </Draggable>
         <Draggable nodeRef={window3Ref} bounds="body" defaultPosition={fundingProgressWindowPosition}>
           <ProgressBarContainer ref={window3Ref}>
-            <Window ref={window3Ref}>
+            <StyledWindow isDarkMode={isDarkMode} ref={window3Ref}>
               <div>
                 <h3>Funding Progress:</h3>
-                {contract_balance && threshold && (
-                  <ProgressBar style={{ width: 212 }} value={calculateProgress(contract_balance, threshold)} />
+                {!threshold_crossed && contract_balance && threshold && (
+                  <ProgressBar  style={{ width: 289 }} value={calculateProgress(contract_balance, threshold)} />
                 )}
+                {threshold_crossed && note_balance && note_threshold && (
+                  <ProgressBar style={{  width: 289 }} value={100} />
+                )}
+
               </div>
-            </Window>
+            </StyledWindow>
           </ProgressBarContainer>
         </Draggable>
         <Draggable nodeRef={window1Ref} bounds="body" defaultPosition={fundMeWindowPosition}>
-          <Window style={{ height: 450, width: 223 }} shadow={true} ref={window1Ref}>
-            <WindowHeader className="window-title">
+          <StyledWindow isDarkMode={isDarkMode} style={{ height: 400, width: 301 }} shadow={true} ref={window1Ref}>
+            <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
               <span>FundMe.exe</span>
-              <Button onClick={resetPositions}>
+              <StyledButton isDarkMode={isDarkMode} onClick={resetPositions}>
                 <span className="close-icon" />
-              </Button>
-            </WindowHeader>
+              </StyledButton>
+            </StyledWindowHeader>
             <div>
-              <h3>Threshold:</h3>
-              {threshold && <span>{threshold.toString()}</span>}
+              <h3>Canto Threshold:</h3>
+              {threshold*10**-18 && <span>{(threshold*10**-18).toString()}</span>}
             </div>
             <h3>NoteThreshold</h3>
-            {note_threshold && <span>{note_threshold.toString()}</span>}
+            {note_threshold*10**-18 && <span>{(note_threshold*10**-18).toString()}</span>}
             <div>
               <h3>Funded:</h3>
-              {funded && funded.toString()}
+              {threshold_crossed && threshold_crossed.toString()}
             </div>
             <div>
               <h3>Contract Balance:</h3>
@@ -313,21 +337,21 @@ export const CanFund = ({ contractAddress }) => {
             </div>
             <label>Sending Note?</label>
             <Checkbox checked={_accept_note} onChange={value => setAcceptNote(!_accept_note)} />
-            <div style={{ padding: 5 }}>
-              <Button onClick={handleAddFundsClick} disabled={fundMeIsLoading || contributeWithTokenIsLoading}>
-                {fundMeIsLoading || contributeWithTokenIsLoading ? "Adding Funds..." : "Add Funds"}
-              </Button>
-              <Button onClick={clear} disabled={!amount || fundMeIsLoading}>
-                Clear
-              </Button>
-              <Button onClick={gitcoin} disabled={gitcoinLoading}>
+            <div style={{ padding: 0 }}>
+              <StyledButton isDarkMode={isDarkMode} onClick={handleAddFundsClick} disabled={fundMeIsLoading || contributeWithTokenIsLoading}>
+                {fundMeIsLoading || contributeWithTokenIsLoading ? "Funds..." : "Funds"}
+              </StyledButton>
+              <StyledButton isDarkMode={isDarkMode} onClick={gitcoin} disabled={gitcoinLoading}>
                 {gitcoinLoading ? "Loading..." : "Gitcoin"}
-              </Button>
-              <Button onClick={handleApproveClick}>
+              </StyledButton>
+              <StyledButton isDarkMode={isDarkMode} onClick={handleApproveClick}>
                 Approve
-              </Button>
+              </StyledButton>
+              <StyledButton isDarkMode={isDarkMode} onClick={clear} disabled={!amount || fundMeIsLoading}>
+    Clear
+  </StyledButton> 
             </div>
-          </Window>
+          </StyledWindow>
         </Draggable>
       </div>
     </div>

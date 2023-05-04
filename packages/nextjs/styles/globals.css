@@ -2,10 +2,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-:root,
-[data-theme] {
-  background: hsl(var(--b2));
-}
+
 
 body {
   min-height: 100vh;
@@ -81,4 +78,37 @@ p {
 .header {
   zIndex: 10000;
 }
+
+.bouncing-container {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+.event-item {
+  position: absolute;
+  white-space: nowrap;
+}
+
+.bouncing-container {
+  position: relative;
+  height: 100vh;
+}
+
+
+    .window {
+      background-color: #ffffff;
+      color: #000000;
+    }
+    
+    /* Window styles for dark mode */
+    .dark-mode .window {
+      background-color: #000000;
+      color: #06fc99;
+    }
+
+
+
+
 

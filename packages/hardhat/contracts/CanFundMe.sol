@@ -12,6 +12,8 @@ contract CanFundMe {
 
     IERC20 public noteToken;
 
+    
+
     /// @notice A record of each accounts delegate
     mapping (address => uint256) public contributions;
 
@@ -34,9 +36,9 @@ contract CanFundMe {
 
     uint256 public time_limit;
 
-    uint16 public gitcoin_scoreThreshold = 10;
+    uint8 public gitcoin_scoreThreshold = 10;
 
-    uint256 public platform_fee;
+    uint8 public platform_fee;
 
     bool public threshold_crossed;
 
@@ -104,11 +106,7 @@ contract CanFundMe {
 
     /// @notice view function that returns true/false if the threshold has been met
     function funded() public view returns (bool) {
-    if (address(this).balance >= threshold || noteToken.balanceOf(address(this)) >= note_threshold) {
-        return true;
-    } else {
-        return false;
-    }
+        return address(this).balance >= threshold || noteToken.balanceOf(address(this)) >= note_threshold;
     }
 
     /// @notice pure function to return the address balance of the token

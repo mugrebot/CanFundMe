@@ -5,12 +5,11 @@ import { useScaffoldEventHistory, useScaffoldEventSubscriber } from "~~/hooks/sc
 const MARQUEE_PERIOD_IN_SEC = 5;
 
     export const EventAnimation = ({ contractAddress }) => {
-  // ... (other states and refs)
+
   const [isRightDirection, setIsRightDirection] = useState(false);
   const [eventHistory, setEventHistory] = useState([]);
 
-  // Get recent events
-  //events
+
   useScaffoldEventSubscriber({
     contractName: "CanFundMe",
     eventName: "Funded",
@@ -47,6 +46,33 @@ useScaffoldEventSubscriber({
     },
   });
 
+  const {    data: _events,
+    isLoading: isLoading,
+    error: error} = useScaffoldEventHistory({
+    contractName: "CanFundMe",
+    eventName: "Funded",
+    fromBlock: 0,
+    toBlock: "latest",
+    transactionData: true,
+    receiptData: true,
+    address: contractAddress,
+  });
+
+  useScaffoldEventHistory({
+    contractName: "CanFundMe",
+    eventName: "NoteFunded",
+    fromBlock: 0,
+    toBlock: "latest",
+    transactionData: true,
+    receiptData: true,
+    address: contractAddress,
+  });
+
+
+
+
+
+
 
   // ... (other effects and functions)
     useEffect(() => {
@@ -55,8 +81,7 @@ useScaffoldEventSubscriber({
     }
     }, [eventHistory]);
 
-    
-    
+  
  
 
     return (

@@ -15,6 +15,8 @@ import {Button, Window } from "react95";
 import { useScaffoldContract, useScaffoldContractWrite, useScaffoldContractRead } from "~~/hooks/scaffold-eth";
 import { ContractAbi, ContractName, UseScaffoldWriteConfig } from "~~/utils/scaffold-eth/contract";
 import { Abi, ExtractAbiFunctionNames } from "abitype";
+import { useDarkMode } from "usehooks-ts";
+import { StyledButton, StyledWindow, StyledSelect, StyledWindowHeader } from "~~/components/styledcomponents";
 
 // these lines read the API key and scorer ID from your .env.local file
 const APIKEY = "716FoKqX.jZD7WuTQhn4pbiEv1cjMsbZEdQqVJemv";
@@ -41,6 +43,8 @@ export default function Passport() {
   const { connect } = useConnect({
     connector: new InjectedConnector(),
   });
+
+  const { isDarkMode } = useDarkMode();
 
   const provider = useProvider();
 
@@ -290,7 +294,7 @@ export default function Passport() {
   return (
     /* this is the UI for the app */
     <div style={styles.main}>
-      <Window>
+      <StyledWindow isDarkMode={isDarkMode}>
       <h1 style={styles.heading}>Gitcoin Passport Scorer 🫶</h1>
       <p style={styles.configurePassport}>
         Configure your passport{" "}
@@ -304,9 +308,9 @@ export default function Passport() {
 
       <div style={styles.buttonContainer}>
         {!isConnected && (
-          <Button style={styles.buttonStyle} onClick={_connect}>
+          <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={_connect}>
             Connect Wallet
-          </Button>
+          </StyledButton>
         )}
         {score && (
           <div>
@@ -326,19 +330,19 @@ export default function Passport() {
         )}
         {isConnected && (
           <div style={styles.buttonContainer}>
-            <Button style={styles.buttonStyle} onClick={submitPassport}>
+            <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={submitPassport}>
               Submit Passport
-            </Button>
-            <Button style={styles.buttonStyle} onClick={() => checkPassport()}>
+            </StyledButton>
+            <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={() => checkPassport()}>
               Check passport score
-            </Button>
+            </StyledButton>
 
-            <Button style={styles.buttonStyle} onClick={() => GetSignedScore()}>
+            <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={() => GetSignedScore()}>
               Get signed score
-            </Button>
-            <Button style={styles.buttonStyle} disabled={isLoading} onClick={() => writeAsync()}>
+            </StyledButton>
+            <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} disabled={isLoading} onClick={() => writeAsync()}>
               Verify Passport
-            </Button>
+            </StyledButton>
           </div>
         )}
         {noScoreMessage && <p style={styles.noScoreMessage}>{noScoreMessage}</p>}
@@ -347,12 +351,13 @@ export default function Passport() {
             <p style={styles.noScoreMessage}>
               Your signature is: <br />
               <p style={truncate}>{_signature}</p>
-              <Button
+              <StyledButton
+                isDarkMode={isDarkMode}
                 onClick={() => copyToClipboard(_signature)}
                 style={{ border: "none", background: "none", cursor: "pointer" }}
               >
                 <CopyIcon className="ml-1 cursor-pointer h-4 w-4" />
-              </Button>
+              </StyledButton>
               {toastVisible && (
                 <div
                   style={{
@@ -381,7 +386,7 @@ export default function Passport() {
           </div>
         )}
       </div>
-      </Window>
+      </StyledWindow>
     </div>
   );
 }

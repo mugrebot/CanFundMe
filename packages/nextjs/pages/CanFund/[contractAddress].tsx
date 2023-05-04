@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import CanFund from '../../components/CanFund';
+import EventAnimation from '~~/components/EventAnimation';
 
 const ContractAddressPage = () => {
   const router = useRouter();

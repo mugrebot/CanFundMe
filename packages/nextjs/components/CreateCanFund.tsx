@@ -11,6 +11,8 @@ import { useAccount } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { useRouter } from "next/router";
 import Draggable from "react-draggable"; // Import Draggable
+import { useDarkMode } from "usehooks-ts";
+import { StyledButton, StyledSelect, StyledWindow, StyledWindowHeader } from "./styledcomponents";
 
 const CreateCanFund: React.FC = () => {
   const [name, setName] = useState("");
@@ -31,6 +33,8 @@ const CreateCanFund: React.FC = () => {
     contractName: "CanFundMeFactory",
   });
 
+  const { isDarkMode } = useDarkMode();
+
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
@@ -46,6 +50,21 @@ const CreateCanFund: React.FC = () => {
     functionName: "getCanFundMeAddresses",
     args: [account],
   });
+
+  const { data: gitcoin_score } = useScaffoldContractRead({
+    contractName: "CanFundMeFactory",
+    functionName: "gitcoin_scores",
+    args: [account],
+  });
+
+  const { writeAsync: createGitcoinCanFundMe, isLoading: isGitcoinLoading } = useScaffoldContractWrite({
+    contractName: "CanFundMeFactory",
+    functionName: "createCanFundMeGitcoin",
+    address: factory.data?.address,
+    abi: deployedContractData?.abi as Abi,
+    args: [benificiaryInput, goal, timelimit, _note_threshold, gitcoin_score],
+  });
+
 
   const addressOptions = CanFundAddresses?.map((address: string) => ({ value: address, label: address })) || [];
 
@@ -96,13 +115,13 @@ const CreateCanFund: React.FC = () => {
     <div>
       {/* Wrap your Window components with Draggable */}
       <Draggable defaultPosition={createWindowPosition}>
-      <Window>
-          <WindowHeader className="window-title">
+      <StyledWindow isDarkMode={isDarkMode}>
+          <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
           <span>create</span>
-            <Button onClick={resetPositions}>
+            <StyledButton isDarkMode={isDarkMode} onClick={resetPositions}>
               <span className="close-icon"></span>
-            </Button>
-          </WindowHeader>
+            </StyledButton>
+          </StyledWindowHeader>
           <h1>Create a new CanFund</h1>
           <div>
             <label>Name:</label>
@@ -128,35 +147,43 @@ const CreateCanFund: React.FC = () => {
           <IntegerInput value={_note_threshold} onChange={(value) => setNoteThreshold(value)} />
           <div>
 
-            <Button onClick={writeAsync} disabled={isLoading}>
-              {isLoading ? "Creating..." : "Create"}
-            </Button>
+          {gitcoin_score > 10 ? (
+  <StyledButton isDarkMode={isDarkMode} style={{marginTop: 5}}onClick={createGitcoinCanFundMe} disabled={isGitcoinLoading}>
+    {isGitcoinLoading ? "Creating..." : "Create GitcoinCanFundMe"}
+  </StyledButton>
+) : (
+  <StyledButton isDarkMode={isDarkMode} onClick={writeAsync} disabled={isLoading}>
+    {isLoading ? "Creating..." : "Create"}
+  </StyledButton>
+)}
+
           </div>
-        </Window>
+        </StyledWindow>
       </Draggable>
       {/* Wrap your Window components with Draggable */}
       <Draggable defaultPosition={manageWindowPosition}>
-        <Window>
-          <WindowHeader>
+        <StyledWindow isDarkMode={isDarkMode}>
+          <StyledWindowHeader isDarkMode={isDarkMode}>
             <span>Select Address</span>
-          </WindowHeader>
+          </StyledWindowHeader>
           <div>
             <label>Select Address:</label>
-            <Select
+            <StyledSelect isDarkMode={isDarkMode}
   options={addressOptions.length === 0 ? [{ value: "", label: "No Address Found" }] : addressOptions}
   value={selectedAddress}
   onChange={handleSelectChange}
-  width={200}
+  width={425}
 />
 
-            <Button
+            <StyledButton
+            isDarkMode={isDarkMode}
               onClick={handleManageClick}
               disabled={!selectedAddress || addressOptions.length === 0} 
             >
               Manage
-            </Button>
+            </StyledButton>
           </div>
-        </Window>
+        </StyledWindow>
       </Draggable>
     </div>
   );

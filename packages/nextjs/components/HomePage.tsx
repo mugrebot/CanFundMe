@@ -20,7 +20,7 @@ import { useOutsideClick } from "~~/hooks/scaffold-eth";
 const Wrapper = styled.div`
   padding: 5rem;
   background: ${({ theme }) => theme.desktopBackground};
-  z-index: 1000;
+  z-index: 100;
 `;
 
 const NavLink = ({ href, children }) => {
@@ -64,12 +64,6 @@ export const HomePage = () => {
         <NavLink href="/debug">
           <BugAntIcon className="h-4 w-4" />
           Debug Contracts
-        </NavLink>
-      </MenuListItem>
-      <MenuListItem>
-        <NavLink href="/example-ui">
-          <SparklesIcon className="h-4 w-4" />
-          Example UI
         </NavLink>
       </MenuListItem>
     </div>

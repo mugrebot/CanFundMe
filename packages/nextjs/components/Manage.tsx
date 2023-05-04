@@ -125,6 +125,13 @@ export const Manage = ({ contractAddress }) => {
                     args: [`${account}`]
                   });
 
+                  const { data: threshold_crossed } = useScaffoldContractRead({
+                    contractName: "CanFundMe",
+                    functionName: "threshold_crossed",
+                    address: contractAddress,
+                    abi: CanFundMeABI,
+                  });
+
 
 
                  
@@ -142,7 +149,7 @@ export const Manage = ({ contractAddress }) => {
     <h2>Time Limit: {Number(time_limit)}</h2>
     <h2>Balance: {canto_balance?.formatted}</h2>
     <h2>Note Balance: {Number(note_balance)}</h2>
-    {funded ? <h2>Funded: True</h2> : <h2>Funded: False</h2>}
+    {threshold_crossed ? <h2>Funded: True</h2> : <h2>Funded: False</h2>}
     {gitcoin_score ? <h2>Gitcoin Score: {Number(gitcoin_score)} -- platform Fees are 0</h2> : <h2>Gitcoin Score: 0, Platform fees are 5%</h2>}
     <Button onClick={writeAsync}>Withdraw</Button>
     <Button style={{ justifyContent: 'right' }} onClick={token_withdraw}>WithdrawNote</Button>

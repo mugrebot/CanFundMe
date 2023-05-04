@@ -7,13 +7,24 @@ import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
 import { useAccount } from "wagmi";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { useScaffoldContractWrite, useScaffoldContract } from "~~/hooks/scaffold-eth";
-import { Button, Select, Window } from "react95"
+import { Button, Select, Window, WindowHeader, Monitor} from "react95"
 import { useState, useEffect} from "react";
+import styled from 'styled-components';
+import { ThemeProvider } from "styled-components";
+import { useDarkMode } from "usehooks-ts";
+import { StyledButton, StyledWindow, StyledSelect, StyledWindowHeader } from "~~/components/styledcomponents";
+
+
+
+
 
 const Home: NextPage = () => {
   const [selectedAddress, setSelectedAddress] = useState();
 
   const router = useRouter();
+
+  const { isDarkMode } = useDarkMode();
+
 
   //use the connected wallet address as address
   const { address: account } = useAccount();
@@ -48,6 +59,10 @@ const Home: NextPage = () => {
     }
   };
 
+  const handleIconClick = (address: string) => {
+    router.push(`/CanFund/${address}`);
+  };
+
   const handleCanFundClick = () => {
     if (selectedAddress) {
       router.push(`/CanFund/${selectedAddress}`);
@@ -63,48 +78,66 @@ const Home: NextPage = () => {
   };
 
 
-
+  const randomPosition = () => {
+    return Math.floor(Math.random() * 80) + 10;
+  };
+  
 
   return (
-    // ... (Other parts of the component remain the same)
-    <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
-      <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-        {/* Add the new navigation links here */}
-        <Window
-          className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs cursor-pointer"
-          onClick={navigateToCreate}
-        >
-          <span className="link">Create CanFund</span>
-        </Window>
-        <Window
-          className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs cursor-pointer"
-          onClick={handleCanFundClick}
-        >
-          <span className="link">View CanFund</span>
-        </Window>
-        <Window
-          className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs cursor-pointer"
-          onClick={handleManageClick}
-        >
-          <span className="link">Manage CanFund</span>
-        </Window>
-        <Window
-          className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs cursor-pointer"
-          onClick={handleGitcoinClick}
-        >
-          <span className="link">Submit Gitcoin Passport</span>
-        </Window>
-        {/* Navigation links end */}
-        <Window>
-        <label>Select Address:</label>
-        <Select
-  options={addressOptions.length === 0 ? [{ value: "", label: "No Address Found" }] : addressOptions}
-  value={selectedAddress}
-  onChange={handleSelectChange}
-  width={200}
-/>
-      </Window>
-    </div>
+  
+<div className="absolute bg-teal w-screen h-screen top-16 flex items-center justify-center">
+        <StyledWindow isDarkMode={isDarkMode}>
+        <StyledWindowHeader isDarkMode={isDarkMode}>
+          <span>CanFundMe.exe</span>
+          </StyledWindowHeader>
+          <div className="flex flex-wrap gap-6 justify-center">
+            <StyledButton
+            isDarkMode={isDarkMode}
+            style={{margin: 15, padding: 10 }}
+              className="window-item flex flex-col items-center cursor-pointer"
+              onClick={navigateToCreate}
+            >
+              <span>Create CanFund</span>
+            </StyledButton>
+            <StyledButton 
+            isDarkMode={isDarkMode}
+            style={{margin: 15, padding: 10 }}
+              className="window-item flex flex-col items-center cursor-pointer"
+              onClick={handleCanFundClick}
+            >
+              <span>View CanFund</span>
+            </StyledButton>
+            <StyledButton             isDarkMode={isDarkMode}
+            style={{margin: 15, padding: 10 }}
+              className="window-item flex flex-col items-center cursor-pointer"
+              onClick={handleManageClick}
+            >
+              <span>Manage CanFund</span>
+            </StyledButton>
+            <StyledButton
+                           isDarkMode={isDarkMode}
+                           style={{margin: 15, padding: 10 }}
+              className="window-item flex flex-col items-center cursor-pointer"
+              onClick={handleGitcoinClick}
+            >
+              <span>Submit Gitcoin Passport</span>
+            </StyledButton>
+          </div>
+          <div className="text-center"
+                        style={{margin: 5, padding: 10 }}>
+            <label>Select Address:</label>
+            <StyledSelect isDarkMode={isDarkMode}
+              options={
+                addressOptions.length === 0
+                  ? [{ value: "", label: "No Address Found" }]
+                  : addressOptions
+              }
+              value={selectedAddress}
+              onChange={handleSelectChange}
+              width={450}
+            />
+          </div>
+        </StyledWindow>
     </div>
   );
 };
