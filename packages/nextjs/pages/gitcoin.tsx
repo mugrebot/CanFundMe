@@ -27,7 +27,7 @@ const SUBMIT_PASSPORT_URI = "https://api.scorer.gitcoin.co/registry/submit-passp
 // endpoint for getting the signing message
 const SIGNING_MESSAGE_URI = "https://api.scorer.gitcoin.co/registry/signing-message";
 // score needed to see hidden message
-const THRESHOLD_NUMBER = 20;
+const THRESHOLD_NUMBER = 10;
 
 const headers = APIKEY
   ? {
@@ -228,19 +228,22 @@ export default function Passport() {
 
   const styles = {
     main: {
-      width: "900px",
+      width: "375px",
       margin: "0 auto",
-      paddingTop: 90,
+      paddingTop: 95,
     },
     heading: {
-      fontSize: 60,
+      fontSize: 40,
+      marginTop: 40,
+      textAlign: "center",
     },
     intro: {
-      fontSize: 18,
+      fontSize: 15,
       color: "rgba(0, 0, 0, .55)",
     },
     configurePassport: {
       marginTop: 20,
+      textAlign: "center",
     },
     linkStyle: {
       color: "#008aff",
@@ -248,6 +251,7 @@ export default function Passport() {
     buttonContainer: {
       marginTop: 20,
       padding: 20,
+      textAlign: "center",
     },
     buttonStyle: {
       padding: "10px 30px",
@@ -257,6 +261,7 @@ export default function Passport() {
       marginRight: "10px",
       borderBottom: "2px solid rgba(0, 0, 0, .2)",
       borderRight: "2px solid rgba(0, 0, 0, .2)",
+      
     },
     hiddenMessageContainer: {
       marginTop: 15,

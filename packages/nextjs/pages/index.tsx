@@ -35,6 +35,8 @@ const Home: NextPage = () => {
 
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
 
+  console.log("deployedContractData", deployedContractData);
+
   const { data: CanFundAddresses } = useScaffoldContractRead({
     contractName: "CanFundMeFactory",
     functionName: "getCanFundMeAddresses",

@@ -6,7 +6,7 @@ import { ethers, utils } from "ethers";
 import { Button, Checkbox, Counter, Frame, Hourglass, NumberInput, ProgressBar, Window, WindowHeader } from "react95";
 import Draggable from "react-draggable";
 import styled from "styled-components";
-import { useProvider, useAccount, useSigner } from "wagmi";
+import { useProvider, useAccount, useSigner, useContract } from "wagmi";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import {
   useScaffoldContract,
@@ -128,12 +128,17 @@ export const CanFund = ({ contractAddress }) => {
   //set below to type number
   const [contract_balance, setContractBalance] = useState();
 
-  const contract = new ethers.Contract(contractAddress, CanFundMeABI, provider);
-
   
+  const contract = useContract({
+    address: contractAddress,
+    abi: CanFundMeABI,
+    signerOrProvider: signer,
+
+  });
+
 
   const fetchContractBalance = async () => {
-    const balance = await contract?.provider.getBalance(contractAddress);
+    const balance = await contract?.provider?.getBalance(contractAddress);
     if (balance) {
       const balance_ether = utils.formatUnits(balance, 'ether');
       setContractBalance(balance_ether);
@@ -276,10 +281,10 @@ export const CanFund = ({ contractAddress }) => {
 
   return (
     <div>
-      <div style={{ zIndex: -100 }}>
+      <div>
         <EventAnimation contractAddress={contractAddress} />
       </div>
-      <div style={{ zIndex: 0 }}>
+      <div>
         <Draggable nodeRef={window2Ref} bounds="body" defaultPosition={timeRemainingWindowPosition}>
           <StyledWindow isDarkMode={isDarkMode} ref={window2Ref}>
             <div>
@@ -307,7 +312,7 @@ export const CanFund = ({ contractAddress }) => {
             </StyledWindow>
           </ProgressBarContainer>
         </Draggable>
-        <Draggable nodeRef={window1Ref} bounds="body" defaultPosition={fundMeWindowPosition}>
+        <Draggable nodeRef={window1Ref} bounds="body" defaultPosition={fundMeWindowPosition} handle=".window-title">
           <StyledWindow isDarkMode={isDarkMode} style={{ height: 400, width: 301 }} shadow={true} ref={window1Ref}>
             <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
               <span>FundMe.exe</span>

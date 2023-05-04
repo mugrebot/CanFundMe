@@ -12,20 +12,27 @@ import { InjectedConnector } from 'wagmi/connectors/injected'
 import { useRouter } from "next/router";
 import Draggable from "react-draggable"; // Import Draggable
 import { useDarkMode } from "usehooks-ts";
-import { StyledButton, StyledSelect, StyledWindow, StyledWindowHeader } from "./styledcomponents";
+import { StyledButton, StyledSelect, StyledWindow, StyledWindowHeader, StyledTextInput } from "./styledcomponents";
+import { DraggableBounds } from "react-draggable";
+import { useWindowSize } from 'usehooks-ts'
+
+
 
 const CreateCanFund: React.FC = () => {
+  const { width, height } = useWindowSize();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [goal, setGoal] = useState();
   const [timelimit, setTimelimit] = useState();
   const [benificiaryInput, setBenificiaryInput] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
+  const [bounds, setBounds] = useState({ left: 0, top: 0, right: width*0.85, bottom: height*0.85 } as DraggableBounds);
 
   const [_note_threshold, setNoteThreshold] = useState(undefined || 0);
 
   const window1Ref = React.useRef(null);
   const window2Ref = React.useRef(null);
+
 
   const { address: account } = useAccount();
 
@@ -65,6 +72,7 @@ const CreateCanFund: React.FC = () => {
     args: [benificiaryInput, goal, timelimit, _note_threshold, gitcoin_score],
   });
 
+  console.log(CanFundAddresses);
 
   const addressOptions = CanFundAddresses?.map((address: string) => ({ value: address, label: address })) || [];
 
@@ -108,13 +116,40 @@ const CreateCanFund: React.FC = () => {
     setCreateWindowPosition({x: 0, y: 0});
     setManageWindowPosition({x: 0, y: 0});
 
+
   };
+
+  const calculateViewportBounds = () => {
+    const viewportWidth = width;
+    const viewportHeight = height;
+
+
+  
+    const bounds: DraggableBounds = {
+      left: 50,
+      right: viewportWidth *0.75,
+      top: 50,
+      bottom: viewportHeight*0.50,
+    };
+  
+    return bounds;
+  };
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setBounds(calculateViewportBounds());
+    };
+  
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
 
   return (
     <div>
-      {/* Wrap your Window components with Draggable */}
-      <Draggable defaultPosition={createWindowPosition}>
+      <Draggable defaultPosition={createWindowPosition} bounds={calculateViewportBounds()} handle='.window-title'>
       <StyledWindow isDarkMode={isDarkMode}>
           <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
           <span>create</span>
@@ -122,57 +157,49 @@ const CreateCanFund: React.FC = () => {
               <span className="close-icon"></span>
             </StyledButton>
           </StyledWindowHeader>
-          <h1>Create a new CanFund</h1>
-          <div>
             <label>Name:</label>
             <TextInput value={name} onChange={(e) => setName(e.target?.value)} />
-          </div>
-          <div>
             <label>Description:</label>
             <TextInput value={description} onChange={(e) => setDescription(e.target?.value)} />
-          </div>
-          <div>
             <label>Goal:</label>
             <IntegerInput value={goal} onChange={(value) => setGoal(value)} />
-          </div>
-          <div>
+
+
             <label>Time limit:</label>
             <IntegerInput value={timelimit} onChange={(value) => setTimelimit(value)} />
-          </div>
-          <div>
+
             <label>Beneficiary:</label>
             <AddressInput value={benificiaryInput} onChange={(value) => setBenificiaryInput(value)} />
-          </div>
+
           <label>Note Goal</label>
           <IntegerInput value={_note_threshold} onChange={(value) => setNoteThreshold(value)} />
-          <div>
-
+<div style={{textAlign: 'center'}}>
           {gitcoin_score > 10 ? (
-  <StyledButton isDarkMode={isDarkMode} style={{marginTop: 5}}onClick={createGitcoinCanFundMe} disabled={isGitcoinLoading}>
+  <StyledButton isDarkMode={isDarkMode} onClick={createGitcoinCanFundMe} disabled={isGitcoinLoading}>
     {isGitcoinLoading ? "Creating..." : "Create GitcoinCanFundMe"}
   </StyledButton>
 ) : (
-  <StyledButton isDarkMode={isDarkMode} onClick={writeAsync} disabled={isLoading}>
+  <StyledButton style={{marginTop: 5}} isDarkMode={isDarkMode} onClick={writeAsync} disabled={isLoading}>
     {isLoading ? "Creating..." : "Create"}
   </StyledButton>
 )}
-
-          </div>
+</div>
         </StyledWindow>
       </Draggable>
       {/* Wrap your Window components with Draggable */}
-      <Draggable defaultPosition={manageWindowPosition}>
+      <Draggable defaultPosition={manageWindowPosition} bounds='parent' handle='.window-title'>
         <StyledWindow isDarkMode={isDarkMode}>
-          <StyledWindowHeader isDarkMode={isDarkMode}>
+          <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
             <span>Select Address</span>
           </StyledWindowHeader>
-          <div>
+
             <label>Select Address:</label>
             <StyledSelect isDarkMode={isDarkMode}
   options={addressOptions.length === 0 ? [{ value: "", label: "No Address Found" }] : addressOptions}
   value={selectedAddress}
   onChange={handleSelectChange}
-  width={425}
+  width={350}
+  maxWidth={350}
 />
 
             <StyledButton
@@ -182,10 +209,10 @@ const CreateCanFund: React.FC = () => {
             >
               Manage
             </StyledButton>
-          </div>
+
         </StyledWindow>
       </Draggable>
-    </div>
+      </div>
   );
 };
 
