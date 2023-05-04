@@ -24,6 +24,7 @@
     "next": "^13.1.6",
     "next-fonts": "^1.5.1",
     "nextjs-progressbar": "^0.0.16",
+    "postcss-nesting": "^11.2.2",
     "react": "^18.2.0",
     "react-blockies": "^1.4.1",
     "react-copy-to-clipboard": "^5.1.0",

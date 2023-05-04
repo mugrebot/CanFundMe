@@ -21,8 +21,9 @@ import {
   useScaffoldEventSubscriber,
 } from "~~/hooks/scaffold-eth";
 import Draggable from "react-draggable";
-import CanFundMe_ABI from "../../hardhat/artifacts/contracts/CanFundMe.sol/CanFundMe.json";
 import { useAccount, useContract, useSigner, useBalance } from 'wagmi'
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+import { Abi, ExtractAbiFunctionNames } from "abitype";
 
 export const Manage = ({ contractAddress }) => {
 
@@ -30,7 +31,9 @@ export const Manage = ({ contractAddress }) => {
 
     const { data: signer } = useSigner();
 
-    const CanFundMeABI = CanFundMe_ABI.abi;
+    const { data: deployedContractInfo } = useDeployedContractInfo('CanFundMe');
+
+    const CanFundMeABI = deployedContractInfo?.abi as Abi;
 
     const { data: canto_balance, isError: balance_error, isLoading: balance_loading } = useBalance({address: contractAddress});
     console.log(canto_balance, balance_error, balance_loading);

@@ -46,8 +46,6 @@ export const CanFund = ({ contractAddress }) => {
   const window2Ref = React.useRef(null);
   const window3Ref = React.useRef(null);
 
-  const CanFundMeABI = CanFundMe_ABI.abi;
-
   const IERC20ABI = IERC20_ABI.abi;
 
   const { data: signer } = useSigner();
@@ -58,14 +56,14 @@ export const CanFund = ({ contractAddress }) => {
 
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMe");
 
-  const CanFundMeAbi = deployedContractData?.abi as Abi;
+  const CanFundMeABI = deployedContractData?.abi as Abi;
 
   const { writeAsync: fundMeAsync, isLoading: fundMeIsLoading } = useScaffoldContractWrite({
     contractName: "CanFundMe",
     functionName: "fundMe",
     value: amount && amount?.toString(),
     address: contractAddress,
-    abi: CanFundMeAbi,
+    abi: CanFundMeABI,
   });
 
   const { writeAsync: contributeWithTokenAsync, isLoading: contributeWithTokenIsLoading } = useScaffoldContractWrite({
