@@ -1,9 +1,9 @@
-import React from 'react';
-import CreateCanFund from '../components/CreateCanFund';
+import React from "react";
+import CreateCanFund from "../components/CreateCanFund";
 
 const CreateTSX = () => {
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       <CreateCanFund />
     </div>
   );

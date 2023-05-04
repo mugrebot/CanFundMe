@@ -1,22 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CopyIcon } from "../components/example-ui/assets/CopyIcon";
 import "@rainbow-me/rainbowkit/styles.css";
+import { Abi } from "abitype";
 import { ethers } from "ethers";
+import { Signer } from "ethers";
+import { useDarkMode } from "usehooks-ts";
 import { useAccount, useConnect, useProvider, useSigner } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
-import { useDeployedContractInfo} from "~~/hooks/scaffold-eth";
-
-import { defaultAbiCoder } from "@ethersproject/abi";
-import { Signer } from "ethers";
-import { recoverTypedSignature_v4 } from 'eth-sig-util';
-import * as sigUtil from 'eth-sig-util';
-import { bufferToHex } from 'ethereumjs-util';
-import {Button, Window } from "react95";
-import { useScaffoldContract, useScaffoldContractWrite, useScaffoldContractRead } from "~~/hooks/scaffold-eth";
-import { ContractAbi, ContractName, UseScaffoldWriteConfig } from "~~/utils/scaffold-eth/contract";
-import { Abi, ExtractAbiFunctionNames } from "abitype";
-import { useDarkMode } from "usehooks-ts";
-import { StyledButton, StyledWindow, StyledSelect, StyledWindowHeader } from "~~/components/styledcomponents";
+import { StyledButton, StyledWindow } from "~~/components/styledcomponents";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+import { useScaffoldContract, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 
 // these lines read the API key and scorer ID from your .env.local file doesnt work
 const APIKEY = process.env.NEXT_PUBLIC_GITCOIN_API_KEY;
@@ -46,19 +39,14 @@ export default function Passport() {
 
   const { isDarkMode } = useDarkMode();
 
-  const provider = useProvider();
-
   const { address, isConnected, connector: activeConnector } = useAccount();
   console.log("address", address);
 
   const { data: signer } = useSigner();
   console.log(signer);
 
-
-
   const liar = Signer.isSigner(signer);
   console.log(liar);
-
 
   // here we deal with any local state we need to manage
   const [score, setScore] = useState<string>("");
@@ -86,7 +74,6 @@ export default function Passport() {
       console.log("error: ", err);
     }
   }
-
 
   /* todo connect user's wallet */
 
@@ -124,7 +111,7 @@ export default function Passport() {
       console.log("no address");
       return;
     }
-  
+
     if (!score) {
       console.log("no score");
       return;
@@ -151,11 +138,9 @@ export default function Passport() {
       _contract: contractInfo?.address,
     };
 
-    console.log('Domain:', domain);
-    console.log('Types:', types);
-    console.log('Message:', message);
-
-    
+    console.log("Domain:", domain);
+    console.log("Types:", types);
+    console.log("Message:", message);
 
     const messageHash = ethers.utils._TypedDataEncoder.hash(domain, types, message);
     console.log(messageHash);
@@ -163,14 +148,12 @@ export default function Passport() {
     const messageHash2 = await ethers.utils._TypedDataEncoder.getPayload(domain, types, message);
     console.log(messageHash2);
 
-    
-  
     try {
       const signature = await signer?._signTypedData(domain, types, message);
 
       console.log("TYPED SIGNED:" + signature);
 
-        // Parse the signature and extract v, r, and s
+      // Parse the signature and extract v, r, and s
       const parsedSignature = ethers.utils.splitSignature(signature);
       const { v, r, s } = parsedSignature;
 
@@ -182,19 +165,17 @@ export default function Passport() {
 
       console.log("Recovered signer: " + signerAddress);
 
-  
       if (signerAddress.toLowerCase() === ethers.utils.getAddress(address).toLowerCase()) {
-        alert('Successfully recovered signer as ' + address);
+        alert("Successfully recovered signer as " + address);
       } else {
-        alert('Failed to verify signer when comparing ' + signerAddress + ' to ' + address);
+        alert("Failed to verify signer when comparing " + signerAddress + " to " + address);
       }
-  
+
       setSignature(signature);
     } catch (error) {
-      console.error('Error signing typed data:', error);
+      console.error("Error signing typed data:", error);
     }
   }
-  
 
   async function submitPassport() {
     setNoScoreMessage("");
@@ -274,7 +255,6 @@ export default function Passport() {
       marginRight: "10px",
       borderBottom: "2px solid rgba(0, 0, 0, .2)",
       borderRight: "2px solid rgba(0, 0, 0, .2)",
-      
     },
     hiddenMessageContainer: {
       marginTop: 15,
@@ -289,7 +269,6 @@ export default function Passport() {
       borderRadius: "4px",
       margin: "0 auto", // Add this line
       maxWidth: "90%", // Add this line
-      
     },
     noScoreMessage: {
       margin: 0,
@@ -311,102 +290,106 @@ export default function Passport() {
     args: [score, _signature],
   });
 
-
   return (
     /* this is the UI for the app */
     <div style={styles.main}>
       <StyledWindow isDarkMode={isDarkMode}>
-      <h1 style={styles.heading}>Gitcoin Passport Scorer 🫶</h1>
-      <p style={styles.configurePassport}>
-        Configure your passport{" "}
-        <a style={styles.linkStyle} target="_blank" href="https://passport.gitcoin.co/#/dashboard" rel="noreferrer">
-          here
-        </a>
-      </p>
-      <p style={styles.configurePassport}>
-        Once you have added more stamps to your passport, submit your passport again to recalculate your score.
-      </p>
+        <h1 style={styles.heading}>Gitcoin Passport Scorer 🫶</h1>
+        <p style={styles.configurePassport}>
+          Configure your passport{" "}
+          <a style={styles.linkStyle} target="_blank" href="https://passport.gitcoin.co/#/dashboard" rel="noreferrer">
+            here
+          </a>
+        </p>
+        <p style={styles.configurePassport}>
+          Once you have added more stamps to your passport, submit your passport again to recalculate your score.
+        </p>
 
-      <div style={styles.buttonContainer}>
-        {!isConnected && (
-          <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={_connect}>
-            Connect Wallet
-          </StyledButton>
-        )}
-        {score && (
-          <div>
-            <h1>Your passport score is {score} 🎉</h1>
-            <div style={styles.hiddenMessageContainer}>
-              {Number(score) >= THRESHOLD_NUMBER && (
-                <h2>
-                  Congratulations, your score is high enough, sign a message and copy the signature to get a bonus when
-                  adding funds!!
-                </h2>
-              )}
-              {Number(score) < THRESHOLD_NUMBER && (
-                <h2>Sorry, your score is not high enough to view the secret message.</h2>
-              )}
+        <div style={styles.buttonContainer}>
+          {!isConnected && (
+            <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={_connect}>
+              Connect Wallet
+            </StyledButton>
+          )}
+          {score && (
+            <div>
+              <h1>Your passport score is {score} 🎉</h1>
+              <div style={styles.hiddenMessageContainer}>
+                {Number(score) >= THRESHOLD_NUMBER && (
+                  <h2>
+                    Congratulations, your score is high enough, sign a message and copy the signature to get a bonus
+                    when adding funds!!
+                  </h2>
+                )}
+                {Number(score) < THRESHOLD_NUMBER && (
+                  <h2>Sorry, your score is not high enough to view the secret message.</h2>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-        {isConnected && (
-          <div style={styles.buttonContainer}>
-            <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={submitPassport}>
-              Submit Passport
-            </StyledButton>
-            <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={() => checkPassport()}>
-              Check passport score
-            </StyledButton>
+          )}
+          {isConnected && (
+            <div style={styles.buttonContainer}>
+              <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={submitPassport}>
+                Submit Passport
+              </StyledButton>
+              <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={() => checkPassport()}>
+                Check passport score
+              </StyledButton>
 
-            <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={() => GetSignedScore()}>
-              Get signed score
-            </StyledButton>
-            <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} disabled={isLoading} onClick={() => writeAsync()}>
-              Verify Passport
-            </StyledButton>
-          </div>
-        )}
-        {noScoreMessage && <p style={styles.noScoreMessage}>{noScoreMessage}</p>}
-        {_signature && (
-          <div style={styles.main}>
-            <p style={styles.noScoreMessage}>
-              Your signature is: <br />
-              <p style={truncate}>{_signature}</p>
+              <StyledButton isDarkMode={isDarkMode} style={styles.buttonStyle} onClick={() => GetSignedScore()}>
+                Get signed score
+              </StyledButton>
               <StyledButton
                 isDarkMode={isDarkMode}
-                onClick={() => copyToClipboard(_signature)}
-                style={{ border: "none", background: "none", cursor: "pointer" }}
+                style={styles.buttonStyle}
+                disabled={isLoading}
+                onClick={() => writeAsync()}
               >
-                <CopyIcon className="ml-1 cursor-pointer h-4 w-4" />
+                Verify Passport
               </StyledButton>
-              {toastVisible && (
-                <div
-                  style={{
-                    position: "fixed",
-                    top: "1rem",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    zIndex: 1000,
-                    backgroundColor: "#0a0a2a",
-                    color: "white",
-                    fontSize: "1rem",
-                    padding: "0.5rem 1rem",
-                    borderRadius: "4px",
-                    tranparent: "0.5s",
-                  }}
+            </div>
+          )}
+          {noScoreMessage && <p style={styles.noScoreMessage}>{noScoreMessage}</p>}
+          {_signature && (
+            <div style={styles.main}>
+              <p style={styles.noScoreMessage}>
+                Your signature is: <br />
+                <p style={truncate}>{_signature}</p>
+                <StyledButton
+                  isDarkMode={isDarkMode}
+                  onClick={() => copyToClipboard(_signature)}
+                  style={{ border: "none", background: "none", cursor: "pointer" }}
                 >
-                  Copied to clipboard!
-                </div>
-              )}
-              <br />
-              Message Contents: <br />
-              Score: {score} <br />
-              Your address: {address} <br />
-              Contract address: {contractInfo?.address}
-            </p>
-          </div>
-        )}
-      </div>
+                  <CopyIcon className="ml-1 cursor-pointer h-4 w-4" />
+                </StyledButton>
+                {toastVisible && (
+                  <div
+                    style={{
+                      position: "fixed",
+                      top: "1rem",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      zIndex: 1000,
+                      backgroundColor: "#0a0a2a",
+                      color: "white",
+                      fontSize: "1rem",
+                      padding: "0.5rem 1rem",
+                      borderRadius: "4px",
+                      tranparent: "0.5s",
+                    }}
+                  >
+                    Copied to clipboard!
+                  </div>
+                )}
+                <br />
+                Message Contents: <br />
+                Score: {score} <br />
+                Your address: {address} <br />
+                Contract address: {contractInfo?.address}
+              </p>
+            </div>
+          )}
+        </div>
       </StyledWindow>
     </div>
   );

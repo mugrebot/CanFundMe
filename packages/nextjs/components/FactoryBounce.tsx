@@ -27,7 +27,7 @@ interface FactoryBounceProps {
     index: number;
 }
 
-export const FactoryBounce: React.FC<FactoryBounceProps> = ({ index }) => {
+export const useFactoryBounce: React.FC<FactoryBounceProps> = ({ index }) => {
 
     const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
 
@@ -61,3 +61,5 @@ export const FactoryBounce: React.FC<FactoryBounceProps> = ({ index }) => {
     );
 
 };
+
+export default useFactoryBounce;
