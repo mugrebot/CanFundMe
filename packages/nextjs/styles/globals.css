@@ -44,6 +44,7 @@ p {
 }
 
 .close-icon {
+  
   width: 16px;
   height: 16px;
   margin-left: -1px;
@@ -54,13 +55,13 @@ p {
   &:after {
     content: "";
     position: absolute;
-    background: hsl(var(--p));
   }
   &:before {
     height: 100%;
     width: 3px;
     left: 50%;
     transform: translateX(-50%);
+      background-color: #000000;
   }
   &:after {
     height: 3px;
@@ -68,6 +69,7 @@ p {
     left: 0px;
     top: 50%;
     transform: translateY(-50%);
+    background-color: #06fc99;;
   }
 }
 

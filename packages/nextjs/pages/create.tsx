@@ -3,7 +3,7 @@ import CreateCanFund from '../components/CreateCanFund';
 
 const CreateTSX = () => {
   return (
-    <div>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <CreateCanFund />
     </div>
   );

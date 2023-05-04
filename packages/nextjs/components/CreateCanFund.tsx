@@ -126,10 +126,10 @@ const CreateCanFund: React.FC = () => {
 
   
     const bounds: DraggableBounds = {
-      left: 50,
-      right: viewportWidth *0.75,
-      top: 50,
-      bottom: viewportHeight*0.50,
+      left: -viewportWidth/5,
+      right: viewportWidth/2,
+      top: -viewportHeight/5,
+      bottom: viewportHeight/5,
     };
   
     return bounds;
@@ -149,7 +149,7 @@ const CreateCanFund: React.FC = () => {
 
   return (
     <div>
-      <Draggable defaultPosition={createWindowPosition} bounds={calculateViewportBounds()} handle='.window-title'>
+      <Draggable defaultPosition={createWindowPosition} bounds='body' handle='.window-title'>
       <StyledWindow isDarkMode={isDarkMode}>
           <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
           <span>create</span>
@@ -187,7 +187,7 @@ const CreateCanFund: React.FC = () => {
         </StyledWindow>
       </Draggable>
       {/* Wrap your Window components with Draggable */}
-      <Draggable defaultPosition={manageWindowPosition} bounds='parent' handle='.window-title'>
+      <Draggable bounds='body' handle='.window-title'>
         <StyledWindow isDarkMode={isDarkMode}>
           <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
             <span>Select Address</span>
