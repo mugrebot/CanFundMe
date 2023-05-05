@@ -1,23 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { EventAnimation } from "./EventAnimation";
-import { EtherInput, IntegerInput } from "./scaffold-eth";
+import IERC20_ABI from "./IERC20.json";
+import { IntegerInput } from "./scaffold-eth";
+import { Abi } from "abitype";
 import { ethers, utils } from "ethers";
-import { Button, Checkbox, Counter, Frame, Hourglass, NumberInput, ProgressBar, Window, WindowHeader } from "react95";
+import { Checkbox, Counter, ProgressBar } from "react95";
 import Draggable from "react-draggable";
 import styled from "styled-components";
-import { useProvider, useAccount, useSigner, useContract } from "wagmi";
-import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import {
-  useScaffoldContract,
-  useScaffoldContractRead,
-  useScaffoldEventHistory,
-  useScaffoldEventSubscriber,
-} from "~~/hooks/scaffold-eth";
-import IERC20_ABI from "./IERC20.json";
 import { useDarkMode } from "usehooks-ts";
-import { StyledButton, StyledWindow, StyledSelect, StyledWindowHeader } from "~~/components/styledcomponents";
-import { Abi, ExtractAbiFunctionNames } from "abitype";
+import { useContract, useSigner } from "wagmi";
+import { StyledButton, StyledWindow, StyledWindowHeader } from "~~/components/styledcomponents";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
 
 // Add these styled components
 const Wrapper = styled.div`
@@ -33,11 +28,10 @@ const ProgressBarContainer = styled.div`
 `;
 
 export const CanFund = ({ contractAddress }) => {
-  const [amount, setAmount] = useState();
+  const [amount, setAmount] = useState("");
   const [_accept_note, setAcceptNote] = useState(false);
-  const [txHash, setTxHash] = useState("");
 
-  const {isDarkMode} = useDarkMode();
+  const { isDarkMode } = useDarkMode();
 
   // Create a useRef for each draggable Window
   const window1Ref = React.useRef(null);
@@ -47,10 +41,6 @@ export const CanFund = ({ contractAddress }) => {
   const IERC20ABI = IERC20_ABI.abi;
 
   const { data: signer } = useSigner();
-
-  const provider = useProvider();
-
-  const { address: account } = useAccount();
 
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMe");
 
@@ -79,7 +69,6 @@ export const CanFund = ({ contractAddress }) => {
     abi: CanFundMeABI,
   });
 
-
   const { data: threshold } = useScaffoldContractRead({
     contractName: "CanFundMe",
     functionName: "threshold",
@@ -94,20 +83,12 @@ export const CanFund = ({ contractAddress }) => {
     abi: CanFundMeABI,
   });
 
-  const { data: funded } = useScaffoldContractRead({
-    contractName: "CanFundMe",
-    functionName: "funded",
-    address: contractAddress,
-    abi: CanFundMeABI,
-  });
-
   const { data: threshold_crossed } = useScaffoldContractRead({
     contractName: "CanFundMe",
     functionName: "threshold_crossed",
     address: contractAddress,
     abi: CanFundMeABI,
   });
-
 
   const { writeAsync: gitcoin, isLoading: gitcoinLoading } = useScaffoldContractWrite({
     contractName: "CanFundMe",
@@ -121,62 +102,46 @@ export const CanFund = ({ contractAddress }) => {
     functionName: "note_threshold",
     address: contractAddress,
     abi: CanFundMeABI,
-    });
+  });
 
   //set below to type number
-  const [contract_balance, setContractBalance] = useState();
+  const [contract_balance, setContractBalance] = useState("");
 
-  
   const contract = useContract({
     address: contractAddress,
     abi: CanFundMeABI,
     signerOrProvider: signer,
-
   });
-
 
   const fetchContractBalance = async () => {
     const balance = await contract?.provider?.getBalance(contractAddress);
     if (balance) {
-      const balance_ether = utils.formatUnits(balance, 'ether');
+      const balance_ether = utils.formatUnits(balance, "ether");
       setContractBalance(balance_ether);
     }
   };
 
   useEffect(() => {
     fetchContractBalance();
-  }, [contractAddress]);
+  });
 
-  const handleAmountChange = value => {
+  const handleAmountChange = (value: React.SetStateAction<number>) => {
     setAmount(value);
   };
 
-  const getTimeRemaining = timestamp => {
-    const currentTime = Math.floor(Date.now() / 1000);
-    const remainingSeconds = timestamp - currentTime;
-
-    const days = Math.floor(remainingSeconds / (60 * 60 * 24));
-    const hours = Math;
-    const minutes = Math.floor((remainingSeconds % (60 * 60)) / 60);
-    const seconds = Math.floor(remainingSeconds % 60);
-
-    return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-  };
-
-  const getTimeRemainingInSeconds = timestamp => {
+  const getTimeRemainingInSeconds = (timestamp: number) => {
     const currentTime = Math.floor(Date.now() / 1000);
     const remainingSeconds = timestamp - currentTime;
     return remainingSeconds;
   };
 
-  const calculateProgress = (balance, threshold) => {
-    const progress_canto = (1 - (Number(threshold)*10**-18 - balance)/(Number(threshold)*10**-18))*100;
-    const progress_note = (1 - (Number(note_threshold) - Number(note_balance))/(Number(note_threshold)))*100; 
+  const calculateProgress = (balance: number, threshold: number) => {
+    const progress_canto = (1 - (Number(threshold) * 10 ** -18 - balance) / (Number(threshold) * 10 ** -18)) * 100;
+    const progress_note = (1 - (Number(note_threshold) - Number(note_balance)) / Number(note_threshold)) * 100;
     //return the larger value of the two
     const progress = Math.max(progress_canto, progress_note);
     return progress.toFixed(0);
   };
-  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -184,17 +149,7 @@ export const CanFund = ({ contractAddress }) => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [contractAddress]);
-
-  const [timeRemaining, setTimeRemaining] = useState(getTimeRemainingInSeconds(time_limit));
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeRemaining(getTimeRemainingInSeconds(time_limit));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [time_limit]);
+  });
 
   const clear = () => {
     setAmount("");
@@ -204,18 +159,6 @@ export const CanFund = ({ contractAddress }) => {
   const calculateDefaultPositions = () => {
     const windowHeight = window.innerHeight;
     const windowWidth = window.innerWidth;
-
-    const window1Width = window1Ref.current?.offsetWidth || 400;
-    const window1Height = window1Ref.current?.offsetHeight || 290;
-
-    const window2Width = window2Ref.current?.offsetWidth || 276;
-    const window2Height = window2Ref.current?.offsetHeight || 89;
-
-    const window3Width = window3Ref.current?.offsetWidth || 200;
-    const window3Height = window3Ref.current?.offsetHeight || 79;
-
-    //find the total width of the screen
-    const totalHeight = Math.max(window1Height, window2Height, window3Height);
 
     const timeRemainingWindowPosition = {
       x: windowWidth / 10000 + 10,
@@ -234,9 +177,6 @@ export const CanFund = ({ contractAddress }) => {
   };
 
   const resetPositions = () => {
-    const { timeRemainingWindowPosition, fundingProgressWindowPosition, fundMeWindowPosition } =
-      calculateDefaultPositions();
-
     window1Ref.current.style.transform = `translate(${fundMeWindowPosition.x}px, ${fundMeWindowPosition.y}px)`;
     window2Ref.current.style.transform = `translate(${timeRemainingWindowPosition.x}px, ${timeRemainingWindowPosition.y}px)`;
     window3Ref.current.style.transform = `translate(${fundingProgressWindowPosition.x}px, ${fundingProgressWindowPosition.y}px)`;
@@ -245,37 +185,33 @@ export const CanFund = ({ contractAddress }) => {
   const { timeRemainingWindowPosition, fundingProgressWindowPosition, fundMeWindowPosition } =
     calculateDefaultPositions();
 
-    const handleApproveClick = async () => {
-      
+  const handleApproveClick = async () => {
+    try {
+      const erc20 = new ethers.Contract("0x03F734Bd9847575fDbE9bEaDDf9C166F880B5E5f", IERC20ABI, signer);
+      console.log(erc20);
+      const tx = await erc20.approve(contractAddress, amount);
+      console.log(tx.hash);
+    } catch (error) {
+      console.error("Error in handleApproveClick:", error);
+    }
+  };
+
+  const handleAddFundsClick = async () => {
+    if (_accept_note) {
       try {
-        const erc20 = new ethers.Contract('0x03F734Bd9847575fDbE9bEaDDf9C166F880B5E5f', IERC20ABI, signer);
-        console.log(erc20);
-        const tx = await erc20.approve(contractAddress, amount);
-        setTxHash(tx.hash);
-        
+        // Initialize the token contract
+
+        // Approve the CanFundMe contract to spend 'amount' tokens on behalf of the user
+
+        // Call the 'contributeWithToken' function on the CanFundMe contract
+        await contributeWithTokenAsync();
       } catch (error) {
-        console.error("Error in handleApproveClick:", error);
+        console.error("Error in handleAddFundsClick:", error);
       }
-    };
-
-
-
-    const handleAddFundsClick = async () => {
-      if (_accept_note) {
-        try {
-          // Initialize the token contract
-    
-          // Approve the CanFundMe contract to spend 'amount' tokens on behalf of the user
-    
-          // Call the 'contributeWithToken' function on the CanFundMe contract
-          await contributeWithTokenAsync();
-        } catch (error) {
-          console.error("Error in handleAddFundsClick:", error);
-        }
-      } else {
-        await fundMeAsync();
-      }
-    };
+    } else {
+      await fundMeAsync();
+    }
+  };
 
   return (
     <div>
@@ -300,12 +236,11 @@ export const CanFund = ({ contractAddress }) => {
               <div>
                 <h3>Funding Progress:</h3>
                 {!threshold_crossed && contract_balance && threshold && (
-                  <ProgressBar  style={{ width: 289 }} value={calculateProgress(contract_balance, threshold)} />
+                  <ProgressBar style={{ width: 289 }} value={Number(calculateProgress(contract_balance, threshold))} />
                 )}
                 {threshold_crossed && note_balance && note_threshold && (
-                  <ProgressBar style={{  width: 289 }} value={100} />
+                  <ProgressBar style={{ width: 289 }} value={100} />
                 )}
-
               </div>
             </StyledWindow>
           </ProgressBarContainer>
@@ -320,10 +255,10 @@ export const CanFund = ({ contractAddress }) => {
             </StyledWindowHeader>
             <div>
               <h3>Canto Threshold:</h3>
-              {threshold*10**-18 && <span>{(threshold*10**-18).toString()}</span>}
+              {threshold * 10 ** -18 && <span>{(threshold * 10 ** -18).toString()}</span>}
             </div>
             <h3>NoteThreshold</h3>
-            {note_threshold*10**-18 && <span>{(note_threshold*10**-18).toString()}</span>}
+            {note_threshold * 10 ** -18 && <span>{(note_threshold * 10 ** -18).toString()}</span>}
             <div>
               <h3>Funded:</h3>
               {threshold_crossed && threshold_crossed.toString()}
@@ -332,7 +267,7 @@ export const CanFund = ({ contractAddress }) => {
               <h3>Contract Balance:</h3>
               {contract_balance} CANTO
               <br />
-              {Number(note_balance) * 10**-18} NOTE
+              {Number(note_balance) * 10 ** -18} NOTE
             </div>
 
             <div>
@@ -340,9 +275,13 @@ export const CanFund = ({ contractAddress }) => {
               <IntegerInput value={amount} name={"amount"} placeholder="0" onChange={handleAmountChange} />
             </div>
             <label>Sending Note?</label>
-            <Checkbox checked={_accept_note} onChange={value => setAcceptNote(!_accept_note)} />
+            <Checkbox checked={_accept_note} onChange={() => setAcceptNote(!_accept_note)} />
             <div style={{ padding: 0 }}>
-              <StyledButton isDarkMode={isDarkMode} onClick={handleAddFundsClick} disabled={fundMeIsLoading || contributeWithTokenIsLoading}>
+              <StyledButton
+                isDarkMode={isDarkMode}
+                onClick={handleAddFundsClick}
+                disabled={fundMeIsLoading || contributeWithTokenIsLoading}
+              >
                 {fundMeIsLoading || contributeWithTokenIsLoading ? "Funds..." : "Funds"}
               </StyledButton>
               <StyledButton isDarkMode={isDarkMode} onClick={gitcoin} disabled={gitcoinLoading}>
@@ -352,8 +291,8 @@ export const CanFund = ({ contractAddress }) => {
                 Approve
               </StyledButton>
               <StyledButton isDarkMode={isDarkMode} onClick={clear} disabled={!amount || fundMeIsLoading}>
-    Clear
-  </StyledButton> 
+                Clear
+              </StyledButton>
             </div>
           </StyledWindow>
         </Draggable>

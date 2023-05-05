@@ -5,7 +5,7 @@ import { Abi } from "abitype";
 import { ethers } from "ethers";
 import { Signer } from "ethers";
 import { useDarkMode } from "usehooks-ts";
-import { useAccount, useConnect, useProvider, useSigner } from "wagmi";
+import { useAccount, useConnect, useSigner } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { StyledButton, StyledWindow } from "~~/components/styledcomponents";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";

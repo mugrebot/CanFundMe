@@ -17,7 +17,6 @@ const Home: NextPage = () => {
   //use the connected wallet address as address
   const { address: account } = useAccount();
 
-
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
 
   console.log("deployedContractData", deployedContractData);
@@ -64,7 +63,6 @@ const Home: NextPage = () => {
   const handleRoundsClick = () => {
     router.push("rounds");
   };
-
 
   return (
     <div className="absolute bg-teal w-screen h-screen top-16 flex items-center justify-center">

@@ -1,17 +1,15 @@
-
-import React from 'react';
-import { useScaffoldContractRead } from '~~/hooks/scaffold-eth';
+import React from "react";
+import dynamic from "next/dynamic";
+import { StyledWindow } from "./styledcomponents";
+import { StyledWindowHeader } from "./styledcomponents";
 import { Abi } from "abitype";
-import { useDeployedContractInfo } from '~~/hooks/scaffold-eth';
-import { useProvider, useContract } from 'wagmi';
-import { ethers, utils } from 'ethers';
-import { useBalance } from 'wagmi'
-import { StyledWindow } from './styledcomponents';
-import { StyledWindowHeader } from './styledcomponents';
-import { useDarkMode } from 'usehooks-ts';
-import dynamic from 'next/dynamic';
-import styled from 'styled-components';
-
+import { ethers, utils } from "ethers";
+import styled from "styled-components";
+import { useDarkMode } from "usehooks-ts";
+import { useContract, useProvider } from "wagmi";
+import { useBalance } from "wagmi";
+import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 
 // Create a styled component for the grid container
 const GridContainer = styled.div`
@@ -21,41 +19,35 @@ const GridContainer = styled.div`
   padding: 16px;
 `;
 
-const ContractBounce = dynamic(() => import('../components/ContractBounce'), { ssr: false });
+const ContractBounce = dynamic(() => import("../components/ContractBounce"), { ssr: false });
 
 interface FactoryBounceProps {
-    index: number;
+  index: number;
 }
 
 export const FactoryBounce: React.FC<FactoryBounceProps> = ({ index }) => {
+  const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
 
-    const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
+  const { isDarkMode } = useDarkMode();
 
-    const {isDarkMode} = useDarkMode();
+  const addresses = [];
 
-    const addresses = [];
-
-    for (let i=0; i<index; i++) {
-
+  for (let i = 0; i < index; i++) {
     const { data: canFundMeAddress } = useScaffoldContractRead({
-        contractName: "CanFundMeFactory",
-        functionName: "canFundMeAddressesAll",
-        abi: deployedContractData?.abi as Abi,
-        args: [i],
+      contractName: "CanFundMeFactory",
+      functionName: "canFundMeAddressesAll",
+      abi: deployedContractData?.abi as Abi,
+      args: [i],
     });
 
     addresses.push(canFundMeAddress);
+  }
 
-    }
-
- 
-
-    return (
-        <GridContainer>
-        {[...new Set(addresses.filter((address) => address !== undefined))].map((address) => (
-          <ContractBounce key={address} address={address} />
-        ))}
-      </GridContainer>
-    );
-
+  return (
+    <GridContainer>
+      {[...new Set(addresses.filter(address => address !== undefined))].map(address => (
+        <ContractBounce key={address} address={address} />
+      ))}
+    </GridContainer>
+  );
 };

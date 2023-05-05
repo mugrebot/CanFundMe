@@ -1,19 +1,11 @@
-import React, { useCallback, useRef, useState } from "react";
-import {
-  AppBar,
-  Button,
-  MenuList,
-  MenuListItem,
-  Separator,
-  TextInput,
-  Toolbar,
-} from "react95";
-import styled from "styled-components";
-import logoIMG from "../assets/CanFundMe.png";
+import { useCallback, useRef, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import Link from "next/link";
-import { Bars3Icon, BugAntIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/router";
+import logoIMG from "../assets/CanFundMe.png";
+import { AppBar, Button, MenuList, MenuListItem, Separator, TextInput, Toolbar } from "react95";
+import styled from "styled-components";
+import { BugAntIcon } from "@heroicons/react/24/outline";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 
@@ -31,9 +23,7 @@ const NavLink = ({ href, children }) => {
     <Link
       href={href}
       passHref
-      className={`${
-        isActive ? "shadow-md" : ""
-      } hover:hover:shadow-md focus:py-1.5 px-3 text-sm rounded-full gap-2`}
+      className={`${isActive ? "shadow-md" : ""} hover:hover:shadow-md focus:py-1.5 px-3 text-sm rounded-full gap-2`}
     >
       {children}
     </Link>
@@ -45,9 +35,11 @@ export const HomePage = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
 
+  console.log(isDrawerOpen);
+
   useOutsideClick(
     burgerMenuRef,
-    useCallback(() => setIsDrawerOpen(false), [])
+    useCallback(() => setIsDrawerOpen(false), []),
   );
 
   const navLinks = (
@@ -73,38 +65,33 @@ export const HomePage = () => {
     <Wrapper>
       <AppBar className="yeet">
         <Toolbar style={{ justifyContent: "space-between" }}>
-
-            <Button
-              onClick={() => setOpen(!open)}
-              active={open}
-              style={{ fontWeight: "bold" }}
+          <Button onClick={() => setOpen(!open)} active={open} style={{ fontWeight: "bold" }}>
+            <Image
+              src={logoIMG}
+              alt="react95 logo"
+              style={{ height: "24px", width: "35px", marginRight: 4, marginBottom: 4 }}
+            />
+            Start
+          </Button>
+          {open && (
+            <MenuList
+              style={{
+                position: "absolute",
+                left: "0",
+                top: "100%",
+              }}
+              onClick={() => setOpen(false)}
             >
-              <Image
-                src={logoIMG}
-                alt="react95 logo"
-                style={{ height: "24px", width: "35px", marginRight: 4, marginBottom: 4 }}
-              />
-              Start
-            </Button>
-            {open && (
-              <MenuList
-                style={{
-                  position: "absolute",
-                  left: "0",
-                  top: "100%",
-                }}
-                onClick={() => setOpen(false)}
-              >
-                {navLinks}
-                <Separator />
-                <MenuListItem disabled>
-                  <span role="img" aria-label="🔙">
-                    🔙
-                  </span>
-                  Logout
-                </MenuListItem>
-              </MenuList>
-            )}
+              {navLinks}
+              <Separator />
+              <MenuListItem disabled>
+                <span role="img" aria-label="🔙">
+                  🔙
+                </span>
+                Logout
+              </MenuListItem>
+            </MenuList>
+          )}
           <TextInput placeholder="Search..." width={150} />
           <div className="yeet" style={{ display: "flex", alignItems: "center" }}>
             <RainbowKitCustomConnectButton />
@@ -113,7 +100,7 @@ export const HomePage = () => {
         </Toolbar>
       </AppBar>
     </Wrapper>
-    );
+  );
 };
 
 export default HomePage;
