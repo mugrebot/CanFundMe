@@ -168,13 +168,16 @@ export const CanFund = ({ contractAddress }) => {
 
 
   const calculateProgress = (balance: number, threshold: number) => {
-    const progress_canto = (1 - (Number(threshold) * 10 ** -18 - balance) / (Number(threshold) * 10 ** -18)) * 100;
-    const progress_note = (1 - (Number(note_threshold) - Number(note_balance)) / Number(note_threshold)) * 100;
-    //return the larger value of the two
-    const progress = Math.max(progress_canto, progress_note);
-    return progress.toFixed(0);
+    if (Number(threshold * 10 ** -18) > Number(balance)) {
+      const progress_canto = (Number(balance) / (Number(threshold) * 10 ** -18)) * 100;
+      const progress_note = (Number(note_balance) / (Number(note_threshold) * 10 ** -18)) * 100;
+      //return the larger value of the two
+      const progress = Math.max(progress_canto, progress_note);
+      return progress.toFixed(0);
+    } else {
+      return 100;
+    }
   };
-
   useEffect(() => {
     const interval = setInterval(() => {
       fetchContractBalance();
@@ -254,7 +257,6 @@ export const CanFund = ({ contractAddress }) => {
   useEffect(() => {
     async function fetchQr() {
       const qr_string = await QRCode.toString(contractAddress, { type: "svg", color: { dark: "#06fc99", light:"#00190f" } });
-      console.log(qr_string);
       setQRCode(qr_string);
     }
 
@@ -287,7 +289,7 @@ export const CanFund = ({ contractAddress }) => {
                 {!threshold_crossed && contract_balance && threshold && (
                   <StyledProgressBar isDarkMode={isDarkMode} style={{ width: 289}} value={Number(calculateProgress(contract_balance, threshold))} />
                 )}
-                {threshold_crossed && note_balance && note_threshold && (
+                {threshold_crossed && (
                   <StyledProgressBar isDarkMode={isDarkMode} style={{ width: 289 }} value={100} />
                 )}
               </div>

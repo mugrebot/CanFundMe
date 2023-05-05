@@ -18,7 +18,7 @@ export const EventAnimation = ({ contractAddress }) => {
         {
           type: "Funded",
           contributor,
-          amount: Number(amount),
+          amount: Number(amount) * 10 ** -18,
           transactionHash: event?.transactionHash,
         },
       ]);
@@ -53,6 +53,15 @@ export const EventAnimation = ({ contractAddress }) => {
     address: contractAddress,
   });
 
+  useScaffoldEventHistory({
+    contractName: "CanFundMe",
+    eventName: "Funded",
+    fromBlock: 0,
+    toBlock: "latest",
+    transactionData: true,
+    receiptData: true,
+    address: contractAddress,
+  });
   // ... (other effects and functions)
   useEffect(() => {
     if (eventHistory.length > 0) {
@@ -83,7 +92,7 @@ export const EventAnimation = ({ contractAddress }) => {
                           <span key={event?.transactionHash}>
                             Contributor -- {event.contributor}
                             <br />
-                            Amount -- {event.amount} NOTE
+                            Amount -- {event.amount} {event.type === "Funded" ? "CANTO" : "NOTE"}
                           </span>
                         ))
                     : " "}
@@ -99,3 +108,4 @@ export const EventAnimation = ({ contractAddress }) => {
 };
 
 export default EventAnimation;
+
