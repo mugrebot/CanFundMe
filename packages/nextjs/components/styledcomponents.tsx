@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Button, Select, Window, WindowHeader, TextInput } from "react95";
+import styled, {css} from "styled-components";
+import { Button, Select, Window, WindowHeader, TextInput, ProgressBar } from "react95";
 
 interface DarkModeProps {
   isDarkMode: boolean;
@@ -65,4 +65,24 @@ export const StyledScrollView = styled.div<DarkModeProps>`
   }
 `;
 
+
+export const StyledProgressBar = styled(ProgressBar)<DarkModeProps>`
+  ${({ isDarkMode }) => css`
+    & > div > div:first-child {
+      background: ${isDarkMode ? "#00190f" : "#06fc99"};
+      color: ${isDarkMode ? "#06fc99" : "#00190f"};
+    }
+
+    & > div > div:last-child {
+      background: ${isDarkMode ? "#06fc99" : "#00190f"};
+      color: ${isDarkMode ? "#00190f" : "#06fc99"};
+      clip-path: polygon(
+        0 0,
+        ${({ value = 0 }) => value}% 0,
+        ${({ value = 0 }) => value}% 100%,
+        0 100%
+      );
+    }
+  `}
+`;
 

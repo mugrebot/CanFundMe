@@ -9,7 +9,7 @@ import Draggable from "react-draggable";
 import styled from "styled-components";
 import { useDarkMode } from "usehooks-ts";
 import { useContract, useSigner } from "wagmi";
-import { StyledButton, StyledWindow, StyledWindowHeader } from "~~/components/styledcomponents";
+import { StyledButton, StyledWindow, StyledWindowHeader, StyledProgressBar } from "~~/components/styledcomponents";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
@@ -236,10 +236,10 @@ export const CanFund = ({ contractAddress }) => {
               <div>
                 <h3>Funding Progress:</h3>
                 {!threshold_crossed && contract_balance && threshold && (
-                  <ProgressBar style={{ width: 289 }} value={Number(calculateProgress(contract_balance, threshold))} />
+                  <StyledProgressBar isDarkMode={isDarkMode} style={{ width: 289}} value={Number(calculateProgress(contract_balance, threshold))} />
                 )}
                 {threshold_crossed && note_balance && note_threshold && (
-                  <ProgressBar style={{ width: 289 }} value={100} />
+                  <StyledProgressBar isDarkMode={isDarkMode} style={{ width: 289 }} value={100} />
                 )}
               </div>
             </StyledWindow>
@@ -249,7 +249,7 @@ export const CanFund = ({ contractAddress }) => {
           <StyledWindow isDarkMode={isDarkMode} style={{ height: 400, width: 301 }} shadow={true} ref={window1Ref}>
             <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
               <span>FundMe.exe</span>
-              <StyledButton isDarkMode={isDarkMode} onClick={resetPositions}>
+              <StyledButton variant='flat' isDarkMode={isDarkMode} onClick={resetPositions}>
                 <span className="close-icon" />
               </StyledButton>
             </StyledWindowHeader>
@@ -275,22 +275,23 @@ export const CanFund = ({ contractAddress }) => {
               <IntegerInput value={amount} name={"amount"} placeholder="0" onChange={handleAmountChange} />
             </div>
             <label>Sending Note?</label>
-            <Checkbox checked={_accept_note} onChange={() => setAcceptNote(!_accept_note)} />
+            <Checkbox variant='flat' checked={_accept_note} onChange={() => setAcceptNote(!_accept_note)} />
             <div style={{ padding: 0 }}>
+            { _accept_note && <StyledButton variant='flat' isDarkMode={isDarkMode} onClick={handleApproveClick} disabled={!_accept_note}> 
+                Approve
+              </StyledButton> }
               <StyledButton
+                variant='flat'
                 isDarkMode={isDarkMode}
                 onClick={handleAddFundsClick}
                 disabled={fundMeIsLoading || contributeWithTokenIsLoading}
               >
-                {fundMeIsLoading || contributeWithTokenIsLoading ? "Funds..." : "Funds"}
+                {fundMeIsLoading || contributeWithTokenIsLoading ? "Funding..." : "Fund"}
               </StyledButton>
-              <StyledButton isDarkMode={isDarkMode} onClick={gitcoin} disabled={gitcoinLoading}>
+              <StyledButton variant='flat' isDarkMode={isDarkMode} onClick={gitcoin} disabled={gitcoinLoading}>
                 {gitcoinLoading ? "Loading..." : "Gitcoin"}
               </StyledButton>
-              <StyledButton isDarkMode={isDarkMode} onClick={handleApproveClick}>
-                Approve
-              </StyledButton>
-              <StyledButton isDarkMode={isDarkMode} onClick={clear} disabled={!amount || fundMeIsLoading}>
+              <StyledButton variant="thin" isDarkMode={isDarkMode} onClick={clear} disabled={!amount || fundMeIsLoading}>
                 Clear
               </StyledButton>
             </div>

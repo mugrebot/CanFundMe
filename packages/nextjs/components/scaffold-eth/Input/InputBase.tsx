@@ -37,6 +37,7 @@ export const InputBase = <T extends { toString: () => string } = string>({
     <div className={`flex border-2 border-base-300 text-accent ${modifier}`}>
       {prefix}
       <TextInput
+        variant="flat"
         className="input-base-300 flex-1"
         placeholder={placeholder}
         name={name}
@@ -44,7 +45,6 @@ export const InputBase = <T extends { toString: () => string } = string>({
         onChange={handleChange}
         disabled={disabled}
         autoComplete="off"
-        variant="default"
       />
       {suffix}
     </div>

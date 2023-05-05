@@ -61,7 +61,7 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <GlobalStyles />
-      <ThemeProvider theme={original}>
+      <ThemeProvider theme={darkTheme}>
         <WagmiConfig client={wagmiClient}>
           <NextNProgress />
           <RainbowKitProvider

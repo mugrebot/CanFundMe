@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import { StyledButton, StyledSelect, StyledWindow, StyledWindowHeader } from "~~/components/styledcomponents";
 import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+import { ThemeProvider, createGlobalStyle } from "styled-components";
 
 const Home: NextPage = () => {
   const [selectedAddress, setSelectedAddress] = useState();
@@ -19,8 +20,6 @@ const Home: NextPage = () => {
   const { address: account } = useAccount();
 
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
-
-  console.log("deployedContractData", deployedContractData);
 
   const { data: CanFundAddresses } = useScaffoldContractRead({
     contractName: "CanFundMeFactory",
