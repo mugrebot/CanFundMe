@@ -27,7 +27,7 @@ export const RainbowKitCustomConnectButton = () => {
             {(() => {
               if (!connected) {
                 return (
-                  <Button className="btn btn-primary btn-sm" onClick={openConnectModal} type="Button">
+                  <Button variant='flat' className="btn btn-primary btn-sm" onClick={openConnectModal} type="Button">
                     Connect Wallet
                   </Button>
                 );
@@ -36,13 +36,14 @@ export const RainbowKitCustomConnectButton = () => {
               if (chain.unsupported || chain.id !== configuredNetwork.id) {
                 return (
                   <div className="dropdown dropdown-end">
-                    <Button tabIndex={0} className="btn btn-error btn-sm dropdown-toggle">
+                    <Button variant='flat' tabIndex={0} className="btn btn-error btn-sm dropdown-toggle">
                       <span>Wrong network</span>
                       <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0" />
                     </Button>
                     <ul tabIndex={0} className="dropdown-content menu p-2 mt-1 shadow-lg bg-base-100 rounded-box">
                       <li>
                         <Button
+                          variant="flat"
                           className="menu-item"
                           type="Button"
                           onClick={() => switchNetwork?.(configuredNetwork.id)}
@@ -54,7 +55,7 @@ export const RainbowKitCustomConnectButton = () => {
                         </Button>
                       </li>
                       <li>
-                        <Button className="menu-item text-error" type="Button" onClick={() => disconnect()}>
+                        <Button variant='flat' className="menu-item text-error" type="Button" onClick={() => disconnect()}>
                           <ArrowLeftOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" /> <span>Disconnect</span>
                         </Button>
                       </li>
@@ -73,6 +74,7 @@ export const RainbowKitCustomConnectButton = () => {
                       </span>
                     </div>
                     <Button
+                      variant='flat'
                       onClick={openAccountModal}
                       type="Button"
                       className="btn btn-secondary btn-sm pl-0 pr-2 shadow-md"

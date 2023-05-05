@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { useAccountBalance } from "~~/hooks/scaffold-eth";
+import { fetchCantoPrice } from "~~/utils/scaffold-eth";
 
 type TBalanceProps = {
   address?: string;
@@ -10,6 +12,19 @@ type TBalanceProps = {
  */
 export const Balance = ({ address, className = "" }: TBalanceProps) => {
   const { balance, price, isError, isLoading, onToggleBalance, isEthBalance } = useAccountBalance(address);
+  const [CantoPrice, setCantoPrice] = useState<number | null>(null);
+
+  useEffect(() => {
+    async function fetchPrice() {
+      const price = await fetchCantoPrice();
+      setCantoPrice(price);
+    }
+
+    fetchPrice();
+  }, []);
+
+
+
 
   if (!address || isLoading || balance === null) {
     return (
@@ -39,12 +54,12 @@ export const Balance = ({ address, className = "" }: TBalanceProps) => {
         {isEthBalance ? (
           <>
             <span>{balance?.toFixed(4)}</span>
-            <span className="text-xs font-bold ml-1">ETH</span>
+            <span className="text-xs font-bold ml-1">CANTO</span>
           </>
         ) : (
           <>
             <span className="text-xs font-bold mr-1">$</span>
-            <span>{(balance * price).toFixed(2)}</span>
+            <span>{CantoPrice && (balance * CantoPrice).toFixed(2)}</span>
           </>
         )}
       </div>
