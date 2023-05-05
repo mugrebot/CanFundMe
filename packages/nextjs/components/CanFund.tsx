@@ -8,11 +8,12 @@ import { Checkbox, Counter, ProgressBar } from "react95";
 import Draggable from "react-draggable";
 import styled from "styled-components";
 import { useDarkMode } from "usehooks-ts";
-import { useContract, useSigner } from "wagmi";
+import { useContract, useSigner, useProvider } from "wagmi";
 import { StyledButton, StyledWindow, StyledWindowHeader, StyledProgressBar } from "~~/components/styledcomponents";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
+import QRCode from "qrcode";
 
 // Add these styled components
 const Wrapper = styled.div`
@@ -27,10 +28,22 @@ const ProgressBarContainer = styled.div`
   max-width: 200px;
 `;
 
+const StyledSvg = styled.div`
+  svg {
+    ${({ isDarkMode }) => isDarkMode && `
+      filter: invert(1);
+    `}
+  }
+  
+`;
+
 export const CanFund = ({ contractAddress }) => {
   const [amount, setAmount] = useState("");
   const [_accept_note, setAcceptNote] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
+  const [_qrCode, setQRCode] = useState("");
+  const [showQRCode, setShowQRCode] = useState(false);
+
 
 
   const { isDarkMode } = useDarkMode();
@@ -39,10 +52,13 @@ export const CanFund = ({ contractAddress }) => {
   const window1Ref = React.useRef(null);
   const window2Ref = React.useRef(null);
   const window3Ref = React.useRef(null);
+  const window4Ref = React.useRef(null);
 
   const IERC20ABI = IERC20_ABI.abi;
 
   const { data: signer } = useSigner();
+
+  const provider = useProvider();
 
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMe");
 
@@ -112,7 +128,7 @@ export const CanFund = ({ contractAddress }) => {
   const contract = useContract({
     address: contractAddress,
     abi: CanFundMeABI,
-    signerOrProvider: signer,
+    signerOrProvider: provider,
   });
 
   const fetchContractBalance = async () => {
@@ -177,28 +193,33 @@ export const CanFund = ({ contractAddress }) => {
     const windowWidth = window.innerWidth;
 
     const timeRemainingWindowPosition = {
-      x: windowWidth / 10000 + 10,
+      x: windowWidth / 10000,
       y: windowHeight / 10000,
     };
     const fundingProgressWindowPosition = {
-      x: windowWidth / 9000 + 10,
+      x: windowWidth / 9000,
       y: windowHeight / 9000,
     };
     const fundMeWindowPosition = {
-      x: windowWidth / 8000 + 10,
+      x: windowWidth / 8000,
       y: windowHeight / 8000,
     };
+    const qrCodeWindowPosition = {
+      x: windowWidth/8,
+      y: windowHeight/10000,
+    };
 
-    return { timeRemainingWindowPosition, fundingProgressWindowPosition, fundMeWindowPosition };
+    return { timeRemainingWindowPosition, fundingProgressWindowPosition, fundMeWindowPosition, qrCodeWindowPosition };
   };
 
   const resetPositions = () => {
     window1Ref.current.style.transform = `translate(${fundMeWindowPosition.x}px, ${fundMeWindowPosition.y}px)`;
     window2Ref.current.style.transform = `translate(${timeRemainingWindowPosition.x}px, ${timeRemainingWindowPosition.y}px)`;
     window3Ref.current.style.transform = `translate(${fundingProgressWindowPosition.x}px, ${fundingProgressWindowPosition.y}px)`;
+    window4Ref.current.style.transform = `translate(${qrCodeWindowPosition.x}px, ${qrCodeWindowPosition.y}px)`;
   };
 
-  const { timeRemainingWindowPosition, fundingProgressWindowPosition, fundMeWindowPosition } =
+  const { timeRemainingWindowPosition, fundingProgressWindowPosition, fundMeWindowPosition, qrCodeWindowPosition } =
     calculateDefaultPositions();
 
   const handleApproveClick = async () => {
@@ -228,6 +249,18 @@ export const CanFund = ({ contractAddress }) => {
       await fundMeAsync();
     }
   };
+
+    
+  useEffect(() => {
+    async function fetchQr() {
+      const qr_string = await QRCode.toString(contractAddress, { type: "svg", color: { dark: "#06fc99", light:"#00190f" } });
+      console.log(qr_string);
+      setQRCode(qr_string);
+    }
+
+    fetchQr();
+  }, [contractAddress]);
+
 
   return (
     <div>
@@ -313,7 +346,23 @@ export const CanFund = ({ contractAddress }) => {
             </div>
           </StyledWindow>
         </Draggable>
-      </div>
+        <Draggable  nodeRef={window4Ref} bounds="body" handle=".bbutton" defaultPosition={qrCodeWindowPosition}>
+      <StyledWindow isDarkMode={isDarkMode} ref={window4Ref}>
+        <StyledWindowHeader isDarkMode={isDarkMode} className="bbutton">
+          <span>QR Code</span>
+        </StyledWindowHeader>
+      <StyledButton variant='thin' isDarkMode={isDarkMode} onClick={() => setShowQRCode(!showQRCode)}>
+       <span> {showQRCode ? "Hide QR Code" : "Show QR Code"}</span>
+      </StyledButton>
+      {showQRCode && (
+        <>
+        <StyledSvg dangerouslySetInnerHTML={{ __html: _qrCode }}/>
+        send canto only
+      </>
+    )}
+    </StyledWindow>
+    </Draggable>
+    </div>
     </div>
   );
 };

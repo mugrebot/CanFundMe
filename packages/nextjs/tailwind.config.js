@@ -50,7 +50,7 @@ module.exports = {
           "--rounded-btn": "9999rem",
           ".tooltip": {
             "--tooltip-tail": "6px",
-            "--tooltip-color": "#06fc99",
+            "--tooltip-color": "#00190f",
           },
         },
       },
