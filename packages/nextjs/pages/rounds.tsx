@@ -6,12 +6,11 @@ import { WindowContent } from "react95";
 import { useDarkMode } from "usehooks-ts";
 import { StyledScrollView, StyledWindow } from "~~/components/styledcomponents";
 import { useDeployedContractInfo, useScaffoldContractRead } from "~~/hooks/scaffold-eth";
-
-dynamic(() => import("../components/ContractBounce"), { ssr: false });
+import { NextPage } from "next";
 
 //for each contract, we need to get the address, and then pass it to the ContractBounce component
 
-const rounds: React.FC = () => {
+const rounds: NextPage = () => {
   //calculate the total number of contracts and retrieve them from FactoryBounce
   //then pass them to ContractBounce
 
@@ -37,6 +36,6 @@ const rounds: React.FC = () => {
       </StyledWindow>
     </div>
   );
-};
+}
 
 export default rounds;

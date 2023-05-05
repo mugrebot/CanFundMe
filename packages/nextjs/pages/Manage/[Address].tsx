@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 import Manage from "../../components/Manage";
+import { NextPage } from "next";
 
-const ManageContractPage = () => {
+const ManageContractPage: NextPage = () => {
   const router = useRouter();
   const { Address: contractAddress } = router.query;
 

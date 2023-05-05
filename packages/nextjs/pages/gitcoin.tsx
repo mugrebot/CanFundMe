@@ -10,6 +10,7 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { StyledButton, StyledWindow } from "~~/components/styledcomponents";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { useScaffoldContract, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { NextPage } from "next";
 
 // these lines read the API key and scorer ID from your .env.local file doesnt work
 const APIKEY = process.env.NEXT_PUBLIC_GITCOIN_API_KEY;
@@ -29,7 +30,7 @@ const headers = APIKEY
     }
   : undefined;
 
-export default function Passport() {
+  const Passport: NextPage = () => {
   const { data: contractInfo } = useDeployedContractInfo("CanFundMeFactory");
   console.log("contractInfo", contractInfo);
 
@@ -394,3 +395,5 @@ export default function Passport() {
     </div>
   );
 }
+
+export default Passport;

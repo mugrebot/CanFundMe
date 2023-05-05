@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 import CanFund from "../../components/CanFund";
+import { NextPage } from "next";
 
-const ContractAddressPage = () => {
+const ContractAddressPage: NextPage = () => {
   const router = useRouter();
   const { contractAddress } = router.query;
 
