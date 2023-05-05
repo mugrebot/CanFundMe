@@ -11,7 +11,7 @@ dynamic(() => import("../components/ContractBounce"), { ssr: false });
 
 //for each contract, we need to get the address, and then pass it to the ContractBounce component
 
-const useRounds: React.FC = () => {
+const rounds: React.FC = () => {
   //calculate the total number of contracts and retrieve them from FactoryBounce
   //then pass them to ContractBounce
 
@@ -39,4 +39,4 @@ const useRounds: React.FC = () => {
   );
 };
 
-export default useRounds;
+export default rounds;
