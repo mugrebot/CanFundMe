@@ -28,6 +28,7 @@ const Home: NextPage = () => {
     args: [account],
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const addressOptions = CanFundAddresses?.map((address: string) => ({ value: address, label: address })) || [];
 
   useEffect(() => {
