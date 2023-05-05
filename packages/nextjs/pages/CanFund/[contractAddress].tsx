@@ -1,10 +1,14 @@
 import { useRouter } from "next/router";
 import CanFund from "../../components/CanFund";
 import { NextPage } from "next";
+import { useAccount } from "wagmi";
 
 const ContractAddressPage: NextPage = () => {
+  const { address: account } = useAccount();
+  console.log(account);
+
   const router = useRouter();
-  if (!router.isFallback) {
+  if (!router.isFallback && !account) {
     return <div>ErrorPAGE404</div>;
 }
   const { contractAddress } = router.query;

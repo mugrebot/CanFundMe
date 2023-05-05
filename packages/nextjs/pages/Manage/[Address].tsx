@@ -1,10 +1,13 @@
 import { useRouter } from "next/router";
 import Manage from "../../components/Manage";
 import { NextPage } from "next";
+import { useAccount } from "wagmi";
 
 const ManageContractPage: NextPage = () => {
+  const { address: account } = useAccount();
+  console.log(account);
   const router = useRouter();
-  if (!router.isFallback) {
+  if (!router.isFallback && !account) {
     return <div>ErrorPAGE404</div>;
 }
   const { Address: contractAddress } = router.query;

@@ -10,15 +10,15 @@ import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 const Home: NextPage = () => {
   const [selectedAddress, setSelectedAddress] = useState();
 
+  const { address: account } = useAccount();
+
   const router = useRouter();
-  if (!router.isFallback) {
+  if (!router.isFallback && !account) {
     return <div>ErrorPAGE404</div>;
 }
 
   const { isDarkMode } = useDarkMode();
 
-  //use the connected wallet address as address
-  const { address: account } = useAccount();
 
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
 
