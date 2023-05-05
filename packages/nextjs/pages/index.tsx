@@ -65,13 +65,16 @@ const Home: NextPage = () => {
   };
 
   return (
-    <div className="absolute bg-teal w-screen h-screen top-16 flex items-center justify-center">
+    <div className="content-container">
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+
       <StyledWindow isDarkMode={isDarkMode}>
         <StyledWindowHeader isDarkMode={isDarkMode}>
           <span>CanFundMe.exe</span>
         </StyledWindowHeader>
         <div className="flex flex-wrap gap-6 justify-center">
           <StyledButton
+          variant="flat"
             isDarkMode={isDarkMode}
             style={{ margin: 15, padding: 10 }}
             className="window-item flex flex-col items-center cursor-pointer"
@@ -80,6 +83,7 @@ const Home: NextPage = () => {
             <span>Create CanFund</span>
           </StyledButton>
           <StyledButton
+          variant="flat"
             isDarkMode={isDarkMode}
             style={{ margin: 15, padding: 10 }}
             className="window-item flex flex-col items-center cursor-pointer"
@@ -88,6 +92,7 @@ const Home: NextPage = () => {
             <span>View CanFund</span>
           </StyledButton>
           <StyledButton
+          variant="flat"
             isDarkMode={isDarkMode}
             style={{ margin: 15, padding: 10 }}
             className="window-item flex flex-col items-center cursor-pointer"
@@ -96,6 +101,7 @@ const Home: NextPage = () => {
             <span>Manage CanFund</span>
           </StyledButton>
           <StyledButton
+          variant="flat"
             isDarkMode={isDarkMode}
             style={{ margin: 15, padding: 10 }}
             className="window-item flex flex-col items-center cursor-pointer"
@@ -104,6 +110,7 @@ const Home: NextPage = () => {
             <span>Submit Gitcoin Passport</span>
           </StyledButton>
           <StyledButton
+          variant="flat"
             isDarkMode={isDarkMode}
             style={{ margin: 15, padding: 10 }}
             className="window-item flex flex-col items-center cursor-pointer"
@@ -115,6 +122,7 @@ const Home: NextPage = () => {
         <div className="text-center" style={{ margin: 5, padding: 10 }}>
           <label>Select Address:</label>
           <StyledSelect
+            variant="flat"
             isDarkMode={isDarkMode}
             options={addressOptions.length === 0 ? [{ value: "", label: "No Address Found" }] : addressOptions}
             value={selectedAddress}
@@ -123,6 +131,7 @@ const Home: NextPage = () => {
           />
         </div>
       </StyledWindow>
+      </div>
     </div>
   );
 };

@@ -4,8 +4,10 @@ import { NextPage } from "next";
 
 const CreateTSX: NextPage = () => {
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+    <div className="content-container">
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
       <CreateCanFund />
+      </div>
     </div>
   );
 };

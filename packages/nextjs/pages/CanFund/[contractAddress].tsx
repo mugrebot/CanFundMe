@@ -11,8 +11,10 @@ const ContractAddressPage: NextPage = () => {
   const { contractAddress } = router.query;
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+    <div className="content-container">
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
       {contractAddress && <CanFund contractAddress={contractAddress.toString()} />}
+    </div>
     </div>
   );
 };

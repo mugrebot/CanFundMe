@@ -27,7 +27,35 @@ export const StyledButton = styled(Button)<DarkModeProps>`
 export const StyledSelect = styled(Select)<DarkModeProps>`
   background-color: ${({ isDarkMode }) => (isDarkMode ? "#00190f" : "#06fc99")};
   color: ${({ isDarkMode }) => (isDarkMode ? "#06fc99" : "#00190f")};
+  margin-top: 5px;
+  margin-right: 5px;
+  position: relative;
+
+  &:hover {
+    background-color: ${({ isDarkMode }) => (isDarkMode ? "#002a1b" : "#29ffab")};
+  }
+
+  // Dropdown button
+  & > div:last-child {
+  }
+
+  // Dropdown menu
+  & > ul {
+    background-color: ${({ isDarkMode }) => (isDarkMode ? "#06fc99" : "#00190f")};
+    border: 1px solid ${({ isDarkMode }) => (isDarkMode ? "#00190f" : "#06fc99")};
+  }
+
+  // Dropdown menu items
+  & > ul > li {
+    color: ${({ isDarkMode }) => (isDarkMode ? "#00190f" : "#06fc99")};
+  }
+
+  // Dropdown menu item hover
+  & > ul > li:hover {
+    background-color: ${({ isDarkMode }) => (isDarkMode ? "#29ffab" : "#002a1b")};
+  }
 `;
+
 
 export const StyledTextInput = styled(TextInput)<DarkModeProps>`
   background-color: ${({ isDarkMode }) => (isDarkMode ? "#00190f" : "#06fc99")};

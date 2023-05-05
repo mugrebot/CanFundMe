@@ -30,6 +30,8 @@ const ProgressBarContainer = styled.div`
 export const CanFund = ({ contractAddress }) => {
   const [amount, setAmount] = useState("");
   const [_accept_note, setAcceptNote] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(0);
+
 
   const { isDarkMode } = useDarkMode();
 
@@ -135,6 +137,20 @@ export const CanFund = ({ contractAddress }) => {
     return remainingSeconds;
   };
 
+  useEffect(() => {
+    const updateRemainingTime = () => {
+      const remainingSeconds = getTimeRemainingInSeconds(time_limit);
+      setRemainingTime(remainingSeconds);
+    };
+
+    updateRemainingTime(); // initial update
+    const interval = setInterval(updateRemainingTime, 1000); // 1000 milliseconds (1 second) interval for updating time
+
+    return () => clearInterval(interval);
+  }, [time_limit]);
+
+
+
   const calculateProgress = (balance: number, threshold: number) => {
     const progress_canto = (1 - (Number(threshold) * 10 ** -18 - balance) / (Number(threshold) * 10 ** -18)) * 100;
     const progress_note = (1 - (Number(note_threshold) - Number(note_balance)) / Number(note_threshold)) * 100;
@@ -223,10 +239,10 @@ export const CanFund = ({ contractAddress }) => {
           <StyledWindow isDarkMode={isDarkMode} ref={window2Ref}>
             <div>
               <h3>Time Remaining:</h3>
-              {time_limit && getTimeRemainingInSeconds(time_limit) > 0 && (
-                <Counter minLength={11} value={getTimeRemainingInSeconds(time_limit)} />
+              {time_limit && remainingTime > 0 && (
+                <Counter minLength={11} value={remainingTime} />
               )}
-              {time_limit && getTimeRemainingInSeconds(time_limit) < 0 && <Counter minLength={11} value={0} />}
+              {time_limit && remainingTime < 0 && <Counter minLength={11} value={0} />}
             </div>
           </StyledWindow>
         </Draggable>

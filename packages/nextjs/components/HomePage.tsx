@@ -65,11 +65,11 @@ export const HomePage = () => {
     <Wrapper>
       <AppBar className="yeet">
         <Toolbar style={{ justifyContent: "space-between" }}>
-          <Button onClick={() => setOpen(!open)} active={open} style={{ fontWeight: "bold" }}>
+          <Button variant='flat' onClick={() => setOpen(!open)} active={open} style={{ fontWeight: "bold" }}>
             <Image
               src={logoIMG}
               alt="react95 logo"
-              style={{ height: "24px", width: "35px", marginRight: 4, marginBottom: 4 }}
+              style={{ height: "28px", width: "34px", marginRight: "0.5rem"}}
             />
             Start
           </Button>
@@ -92,7 +92,6 @@ export const HomePage = () => {
               </MenuListItem>
             </MenuList>
           )}
-          <TextInput placeholder="Search..." width={150} />
           <div className="yeet" style={{ display: "flex", alignItems: "center" }}>
             <RainbowKitCustomConnectButton />
             <FaucetButton />

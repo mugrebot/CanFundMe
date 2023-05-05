@@ -111,6 +111,13 @@ p {
       color: #06fc99;
     }
 
+    .content-container {
+      min-height: calc(100vh - 60px); 
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
 
 
 

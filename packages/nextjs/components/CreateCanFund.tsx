@@ -149,14 +149,14 @@ const CreateCanFund: React.FC = () => {
         <StyledWindow isDarkMode={isDarkMode}>
           <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
             <span>create</span>
-            <StyledButton isDarkMode={isDarkMode} onClick={resetPositions}>
+            <StyledButton variant='flat' isDarkMode={isDarkMode} onClick={resetPositions}>
               <span className="close-icon"></span>
             </StyledButton>
           </StyledWindowHeader>
           <label>Name:</label>
-          <TextInput value={name} onChange={e => setName(e.target?.value)} />
+          <TextInput variant='flat' value={name} onChange={e => setName(e.target?.value)} />
           <label>Description:</label>
-          <TextInput value={description} onChange={e => setDescription(e.target?.value)} />
+          <TextInput variant='flat' value={description} onChange={e => setDescription(e.target?.value)} />
           <label>Goal:</label>
           <IntegerInput value={goal} onChange={value => setGoal(value)} />
 
@@ -170,19 +170,19 @@ const CreateCanFund: React.FC = () => {
           <IntegerInput value={_note_threshold} onChange={value => setNoteThreshold(value)} />
           <div style={{ textAlign: "center" }}>
             {gitcoin_score > 10 ? (
-              <StyledButton isDarkMode={isDarkMode} onClick={createGitcoinCanFundMe} disabled={isGitcoinLoading}>
+              <StyledButton variant='flat' isDarkMode={isDarkMode} onClick={createGitcoinCanFundMe} disabled={isGitcoinLoading}>
                 {isGitcoinLoading ? "Creating..." : "Create GitcoinCanFundMe"}
               </StyledButton>
             ) : (
-              <StyledButton style={{ marginTop: 5 }} isDarkMode={isDarkMode} onClick={writeAsync} disabled={isLoading}>
+              <StyledButton variant='flat' style={{ marginTop: 5 }} isDarkMode={isDarkMode} onClick={writeAsync} disabled={isLoading}>
                 {isLoading ? "Creating..." : "Create"}
               </StyledButton>
             )}
           </div>
         </StyledWindow>
       </Draggable>
-      {/* Wrap your Window components with Draggable */}
-      <Draggable bounds="body" handle=".window-title">
+<div>
+      <Draggable defaultPosition={createWindowPosition} bounds="body" handle=".window-title">
         <StyledWindow isDarkMode={isDarkMode}>
           <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
             <span>Select Address</span>
@@ -190,6 +190,7 @@ const CreateCanFund: React.FC = () => {
 
           <label>Select Address:</label>
           <StyledSelect
+            variant='flat' 
             isDarkMode={isDarkMode}
             options={addressOptions.length === 0 ? [{ value: "", label: "No Address Found" }] : addressOptions}
             value={selectedAddress}
@@ -199,6 +200,7 @@ const CreateCanFund: React.FC = () => {
           />
 
           <StyledButton
+          variant='flat' 
             isDarkMode={isDarkMode}
             onClick={handleManageClick}
             disabled={!selectedAddress || addressOptions.length === 0}
@@ -207,6 +209,7 @@ const CreateCanFund: React.FC = () => {
           </StyledButton>
         </StyledWindow>
       </Draggable>
+      </div>
     </div>
   );
 };
