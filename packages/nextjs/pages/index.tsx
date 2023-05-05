@@ -33,12 +33,6 @@ const Home: NextPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const addressOptions = CanFundAddresses?.map((address: string) => ({ value: address, label: address })) || [];
 
-  useEffect(() => {
-    if (!selectedAddress) {
-      setSelectedAddress(addressOptions[0]?.value);
-    }
-  }, [selectedAddress, addressOptions]);
-
   const navigateToCreate = () => {
     router.push("/create");
   };
