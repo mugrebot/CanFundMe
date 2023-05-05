@@ -10,15 +10,13 @@ import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 const Home: NextPage = () => {
   const [selectedAddress, setSelectedAddress] = useState();
 
-  const { address: account } = useAccount();
-
   const router = useRouter();
-  if (!router.isFallback && !account) {
-    return <div>ErrorPAGE404</div>;
-}
+  
 
   const { isDarkMode } = useDarkMode();
 
+  //use the connected wallet address as address
+  const { address: account } = useAccount();
 
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMeFactory");
 
@@ -32,6 +30,12 @@ const Home: NextPage = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const addressOptions = CanFundAddresses?.map((address: string) => ({ value: address, label: address })) || [];
+
+  useEffect(() => {
+    if (!selectedAddress) {
+      setSelectedAddress(addressOptions[0]?.value);
+    }
+  }, [selectedAddress, addressOptions]);
 
   const navigateToCreate = () => {
     router.push("/create");

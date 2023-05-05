@@ -8,9 +8,6 @@ const ContractAddressPage: NextPage = () => {
   console.log(account);
 
   const router = useRouter();
-  if (!router.isFallback && !account) {
-    return <div>ErrorPAGE404</div>;
-}
   const { contractAddress } = router.query;
 
   return (

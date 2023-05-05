@@ -7,9 +7,6 @@ const ManageContractPage: NextPage = () => {
   const { address: account } = useAccount();
   console.log(account);
   const router = useRouter();
-  if (!router.isFallback && !account) {
-    return <div>ErrorPAGE404</div>;
-}
   const { Address: contractAddress } = router.query;
 
   console.log(contractAddress);

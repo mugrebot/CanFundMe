@@ -8,9 +8,6 @@ import { useOutsideClick } from "~~/hooks/scaffold-eth";
 
 const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
   const router = useRouter();
-  if (!router.isFallback && !href) {
-    return <div>ErrorPAGE404</div>;
-}
   const isActive = router.pathname === href;
 
   return (

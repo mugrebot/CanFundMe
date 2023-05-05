@@ -84,9 +84,6 @@ const CreateCanFund: React.FC = () => {
   }, [selectedAddress, addressOptions]);
 
   const router = useRouter();
-    if (!router.isFallback && !addressOptions) {
-    return <div>ErrorPAGE404</div>;
-}
 
   const handleManageClick = () => {
     if (selectedAddress) {
