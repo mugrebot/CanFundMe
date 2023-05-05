@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { EventAnimation } from "./EventAnimation";
 import { EtherInput, IntegerInput } from "./scaffold-eth";
