@@ -4,6 +4,9 @@ import { NextPage } from "next";
 
 const ManageContractPage: NextPage = () => {
   const router = useRouter();
+  if (!router.isFallback) {
+    return <div>ErrorPAGE404</div>;
+}
   const { Address: contractAddress } = router.query;
 
   console.log(contractAddress);

@@ -11,6 +11,9 @@ const Home: NextPage = () => {
   const [selectedAddress, setSelectedAddress] = useState();
 
   const router = useRouter();
+  if (!router.isFallback) {
+    return <div>ErrorPAGE404</div>;
+}
 
   const { isDarkMode } = useDarkMode();
 

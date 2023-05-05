@@ -17,6 +17,9 @@ const Wrapper = styled.div`
 
 const NavLink = ({ href, children }) => {
   const router = useRouter();
+  if (!router.isFallback && !href) {
+    return <div>ErrorPAGE404</div>;
+}
   const isActive = router.pathname === href;
 
   return (

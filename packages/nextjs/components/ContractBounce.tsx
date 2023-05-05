@@ -14,6 +14,9 @@ interface ContractBounceProps {
 
 export const ContractBounce: React.FC<ContractBounceProps> = ({ address }) => {
   const router = useRouter();
+  if (!router.isFallback && !address) {
+    return <div>ErrorPAGE404</div>;
+}
 
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMe");
 
