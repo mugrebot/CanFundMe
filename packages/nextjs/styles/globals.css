@@ -176,7 +176,8 @@ p {
   min-height: 150px;
   max-height: 150px;
   font-size: 16px;
-  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   resize: vertical;
   background-color: #000000;
   color: #06fc99;

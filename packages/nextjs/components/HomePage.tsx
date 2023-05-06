@@ -71,7 +71,7 @@ export const HomePage = () => {
               alt="react95 logo"
               style={{ height: "28px", width: "34px", marginRight: "0.5rem"}}
             />
-            Start
+            can_FundMe
           </Button>
           {open && (
             <MenuList
