@@ -8,7 +8,7 @@ import { useDarkMode } from "usehooks-ts";
 import { useAccount, useConnect, useSigner } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { StyledButton, StyledWindow, StyledTab, StyledTabs, StyledWindowHeader} from "~~/components/styledcomponents";
-import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo, useScaffoldContractRead } from "~~/hooks/scaffold-eth";
 import { useScaffoldContract, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -305,8 +305,10 @@ const [textMessage, setTextMessage] = useState<string>("");
   };
 
   const { data: deployedContractData } = useDeployedContractInfo("Profile");
+  const { data: CanFundContractData } = useDeployedContractInfo("CanFundMe");
 
   const CanFundMeABI = deployedContractData?.abi as Abi;
+  const CanFundMeContractABI = deployedContractData?.contract as Abi;
 
   const { writeAsync: SetProfile, isLoading: fundMeIsLoading } = useScaffoldContractWrite({
     contractName: "Profile",
@@ -316,9 +318,20 @@ const [textMessage, setTextMessage] = useState<string>("");
     args: [cid, deployedContractData?.address, _signature, _address]
   });
 
+  const { data: isOwner } = useScaffoldContractRead({
+    contractName: "CanFundMe",
+    functionName: "owner",
+    address: _address,
+    abi: CanFundMeContractABI,
+  });
+
+  const beans = isOwner == address;
+  console.log(beans);
+
+
   return (
     <div>
-      <Draggable bounds='body' handle='.yeet'>
+      {beans && <Draggable bounds='body' handle='.yeet'>
       <StyledWindow style={{width:400}} isDarkMode={isDarkMode}>
       <StyledWindowHeader className='yeet' style={{display: 'flex', justifyContent: 'space-between'}}isDarkMode={isDarkMode}>profile.exe
       <StyledButton variant='flat' isDarkMode={isDarkMode} onClick={onMinimize}>_</StyledButton>
@@ -382,7 +395,7 @@ const [textMessage, setTextMessage] = useState<string>("");
         </TabBody>
         </WindowContent>
       </StyledWindow>
-      </Draggable>
+      </Draggable>}
     </div>
   );
 };
