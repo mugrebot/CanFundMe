@@ -25,9 +25,9 @@ const rounds: NextPage = () => {
   });
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+    <div style={{ marginTop: '100px', display: "flex", justifyContent: "center", alignItems: "center"}}>
           <div className="content-container">
-      <StyledWindow style={{marginTop: '50px'}}isDarkMode={isDarkMode}>
+      <StyledWindow style={{ marginTop: "50px", height: "calc(100vh - 50px)", width: "100vw" }} isDarkMode={isDarkMode}>
         <WindowContent>
           <StyledScrollView isDarkMode={isDarkMode}>
             {totalCanFundMes && Number(totalCanFundMes) > 0 && <FactoryBounce index={Number(totalCanFundMes)} />}

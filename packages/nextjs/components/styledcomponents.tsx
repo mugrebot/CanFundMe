@@ -1,5 +1,5 @@
 import styled, {css} from "styled-components";
-import { Button, Select, Window, WindowHeader, TextInput, ProgressBar } from "react95";
+import { Button, Select, Window, WindowHeader, TextInput, ProgressBar, Tab, Tabs } from "react95";
 
 interface DarkModeProps {
   isDarkMode: boolean;
@@ -112,6 +112,16 @@ export const StyledProgressBar = styled(ProgressBar)<DarkModeProps>`
       );
     }
   `}
+`;
+
+export const StyledTab = styled(Tab)<DarkModeProps>`
+  background-color: ${({ isDarkMode }) => (isDarkMode ? "#00190f" : "#06fc99")};
+  color: ${({ isDarkMode }) => (isDarkMode ? "#06fc99" : "#00190f")};
+`;
+
+export const StyledTabs = styled(Tabs)<DarkModeProps>`
+  background-color: ${({ isDarkMode }) => (isDarkMode ? "#00190f" : "#06fc99")};
+  color: ${({ isDarkMode }) => (isDarkMode ? "#06fc99" : "#00190f")};
 `;
 
 

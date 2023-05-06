@@ -39,7 +39,16 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     log: true,
     autoMine: true,
   });
+  
 
+  const profile_verifier_contract = await deploy("Profile", {
+    from: deployer,
+    args: ["CanFundProfile", "1"],
+    log: true,
+    autoMine: true,
+  });
+
+  /*
 
   await deploy("YourContract", {
     from: deployer,
@@ -51,6 +60,8 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     autoMine: true,
   });
 
+  */
+
   const beans = await deploy("CanFundMeFactory", {
     from: deployer,
     // Contract constructor arguments
@@ -60,6 +71,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     // automatically mining the contract deployment transaction. There is no effect on live networks.
     autoMine: true,
   });
+
 
   await deploy("CanFundMe", {
     from: deployer,
@@ -71,10 +83,10 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   // Get the deployed contract
   // const yourContract = await hre.ethers.getContract("YourContract", deployer);
+
+
+
 };
-
-
-
 export default deployYourContract;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.

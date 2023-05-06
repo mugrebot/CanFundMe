@@ -48,6 +48,13 @@ export const ContractBounce: React.FC<ContractBounceProps> = ({ address }) => {
     address: address,
   });
 
+  const { data: time_limit } = useScaffoldContractRead({
+    contractName: "CanFundMe",
+    functionName: "time_limit",
+    abi: deployedContractData?.abi as Abi,
+    address: address,
+  });
+
   const { data: cantoBalance, isError, isLoading } = useBalance({ address: address });
 
   if (isLoading) return <div>Fetching balance…</div>;
@@ -55,7 +62,9 @@ export const ContractBounce: React.FC<ContractBounceProps> = ({ address }) => {
 
   return (
     <div>
-      <StyledWindow isDarkMode={isDarkMode}>
+      <StyledWindow 
+      isDarkMode={isDarkMode}
+      style={{ filter: time_limit > 0 ? "none" : "grayscale(100%)" }}>
         <StyledWindowHeader isDarkMode={isDarkMode}>
           <h2>CanFundMe.exe</h2>
         </StyledWindowHeader>
@@ -66,6 +75,8 @@ export const ContractBounce: React.FC<ContractBounceProps> = ({ address }) => {
           <p>Funded: {funded?.toString()}</p>
           <p>Platform Fee: {platformFee}</p>
           <p>Note Balance: {Number(noteBalance)}</p>
+          <p>Active: {time_limit>0 ? "true" : "false"
+          }</p>
           <p>
             Regular Balance: {cantoBalance?.formatted}
             {cantoBalance?.symbol}

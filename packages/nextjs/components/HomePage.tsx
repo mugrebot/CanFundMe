@@ -84,12 +84,6 @@ export const HomePage = () => {
             >
               {navLinks}
               <Separator />
-              <MenuListItem disabled>
-                <span role="img" aria-label="🔙">
-                  🔙
-                </span>
-                Logout
-              </MenuListItem>
             </MenuList>
           )}
           <div className="yeet" style={{ display: "flex", alignItems: "center" }}>

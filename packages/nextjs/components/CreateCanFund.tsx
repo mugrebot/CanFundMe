@@ -153,10 +153,6 @@ const CreateCanFund: React.FC = () => {
               <span className="close-icon"></span>
             </StyledButton>
           </StyledWindowHeader>
-          <label>Name:</label>
-          <TextInput variant='flat' value={name} onChange={e => setName(e.target?.value)} />
-          <label>Description:</label>
-          <TextInput variant='flat' value={description} onChange={e => setDescription(e.target?.value)} />
           <label>Goal:</label>
           <IntegerInput value={goal} onChange={value => setGoal(value)} />
 

@@ -11,10 +11,10 @@ import { useBalance } from "wagmi";
 import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 
-// Create a styled component for the grid container
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-auto-rows: auto;
   grid-gap: 16px;
   padding: 16px;
 `;
