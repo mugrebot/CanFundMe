@@ -2,23 +2,19 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-
-
-
 body {
-  min-height: 100vh;
+  @apply min-h-screen;
 }
 
 h1,
 h2,
 h3,
 h4 {
-  margin-bottom: 0.5rem;
-  line-height: 1;
+  @apply mb-2 leading-none;
 }
 
 p {
-  margin: 1rem 0;
+  @apply my-4;
 }
 
 .btn {
@@ -30,130 +26,80 @@ p {
 }
 
 .window-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  width: 100%;
-  height: 100%;
+  @apply flex justify-center items-center absolute w-full h-full;
 }
 
 .window-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  @apply flex items-center justify-between;
 }
 
 .close-icon {
-  
-  width: 16px;
-  height: 16px;
-  margin-left: -1px;
-  margin-top: -1px;
-  transform: rotateZ(45deg);
-  position: relative;
-  &:before,
-  &:after {
-    content: "";
-    position: absolute;
-  }
-  &:before {
-    height: 100%;
-    width: 3px;
-    left: 50%;
-    transform: translateX(-50%);
-      background-color: #000000;
-  }
-  &:after {
-    height: 3px;
-    width: 100%;
-    left: 0px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #06fc99;;
-  }
+  @apply w-4 h-4 -m-0.5 relative rotate-45;
+}
+
+.close-icon:before,
+.close-icon:after {
+  @apply absolute;
+}
+
+.close-icon:before {
+  @apply h-full w-0.5 left-1/2 translate-x-1/2 bg-black;
+}
+
+.close-icon:after {
+  @apply h-0.5 w-full left-0 top-1/2 translate-y-1/2 bg-green-400;
 }
 
 .beans {
-  z-index: 1000;
+  @apply z-10;
 }
 
 .header {
-  zIndex: 1;
+  @apply z-10;
 }
 
 .bouncing-container {
-  position: relative;
-  overflow: hidden;
-  height: 100%;
-  width: 100%;
+  @apply relative overflow-hidden h-full w-full;
 }
 
 .event-item {
-  position: absolute;
-  white-space: nowrap;
+  @apply absolute whitespace-nowrap;
 }
 
 .bouncing-container {
-  position: relative;
-  height: 100vh;
+  @apply relative h-screen;
+}
+
+.window {
+  @apply bg-white text-black;
+}
+
+.dark-mode .window {
+  @apply bg-black text-green-400;
+}
+
+.content-container {
+  min-height: calc(100vh - 60px);
+  @apply flex justify-center p-4;
 }
 
 
-    .window {
-      background-color: #ffffff;
-      color: #000000;
-    }
-    
-    /* Window styles for dark mode */
-    .dark-mode .window {
-      background-color: #000000;
-      color: #06fc99;
-    }
+.profile-container {
+  @apply absolute top-0 left-1/2 sm:left-auto lg:left-1/3 xl:left-1/2 transform -translate-x-1/2;
+}
 
-    .content-container {
-      min-height: calc(100vh - 60px); 
-      display: flex;
-      justify-content: center;
-      
-    }
+.qrBackground {
+  @apply bg-center bg-no-repeat bg-contain w-full h-full;
+}
 
-    .profile-container {
-      position: absolute;
-      top: 0;
-      left: 43vw;
-    }
+.modal {
+  @apply bg-white p-5 rounded-md shadow-lg w-64 h-64;
+}
 
-    .qrBackground {
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
-      width: 100%;
-      height: 100%;
-    }
+.overlay {
+  @apply fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-50;
+}
 
-    .modal {
-      background-color: white;
-      padding: 20px;
-      border-radius: 4px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      width: 250px;
-      height: 250px;
-    }
-    
-    
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-    
-
-    /* animations.css */
 @keyframes loadingText {
   0% {
     opacity: 1;
@@ -166,26 +112,6 @@ p {
   }
 }
 
-.loading-text {
-  animation: loadingText 1.5s ease-in-out infinite;
-}
-
 .notepad-textarea {
-  width: 100%;
-  height: 150px;
-  min-height: 150px;
-  max-height: 150px;
-  font-size: 16px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  resize: vertical;
-  background-color: #000000;
-  color: #06fc99;
-  border: none;
-  outline: none;
+  @apply w-full h-40 min-h-40 max-h-40 text-lg mt-2 mb-2 resize-y bg-black text-green-400 border-none outline-none;
 }
-
-
-
-
-
