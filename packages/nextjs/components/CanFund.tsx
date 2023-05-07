@@ -356,7 +356,7 @@ export const CanFund = ({ contractAddress }) => {
             <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
               <span>FundMe.exe</span>
               <StyledButton variant='flat' isDarkMode={isDarkMode} onClick={resetPositions}>
-                <span className="close-icon" />
+                /
               </StyledButton>
             </StyledWindowHeader>
             <div>
