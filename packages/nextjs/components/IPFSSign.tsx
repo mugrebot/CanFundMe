@@ -352,7 +352,7 @@ const [textMessage, setTextMessage] = useState<string>("");
                                   style={styles.buttonStyle}
                                   onClick={() => GetSignedScore()}
                                 >
-                                  Get signed score
+                                  Sign CID
                                 </StyledButton>
                               )}
             {activeTab === 0 && isConnected && (

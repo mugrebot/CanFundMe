@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { StyledButton, StyledWindow } from "./styledcomponents";
 import { StyledWindowHeader } from "./styledcomponents";
@@ -13,6 +13,7 @@ interface ContractBounceProps {
 }
 
 export const ContractBounce: React.FC<ContractBounceProps> = ({ address }) => {
+  const [remainingTime, setRemainingTime] = useState(0);
   const router = useRouter();
 
   const { data: deployedContractData } = useDeployedContractInfo("CanFundMe");
@@ -55,16 +56,34 @@ export const ContractBounce: React.FC<ContractBounceProps> = ({ address }) => {
     address: address,
   });
 
+  const getTimeRemainingInSeconds = (timestamp: number) => {
+    const currentTime = Math.floor(Date.now() / 1000);
+    const remainingSeconds = timestamp - currentTime;
+    return remainingSeconds;
+  };
+
+  useEffect(() => {
+    const updateRemainingTime = () => {
+      const remainingSeconds = getTimeRemainingInSeconds(time_limit);
+      setRemainingTime(remainingSeconds);
+    };
+
+    updateRemainingTime(); // initial update
+    const interval = setInterval(updateRemainingTime, 1000); // 1000 milliseconds (1 second) interval for updating time
+
+    return () => clearInterval(interval);
+  }, [time_limit]);
+
   const { data: cantoBalance, isError, isLoading } = useBalance({ address: address });
 
   if (isLoading) return <div>Fetching balance…</div>;
   if (isError) return <div>Error fetching balance</div>;
 
   return (
-    <div>
+    <div style={{padding: 5}}>
       <StyledWindow 
       isDarkMode={isDarkMode}
-      style={{ filter: time_limit > 0 ? "none" : "grayscale(100%)" }}>
+      style={{ filter: remainingTime > 0 ? "none" : "grayscale(100%)" }}>
         <StyledWindowHeader isDarkMode={isDarkMode}>
           <h2>CanFundMe.exe</h2>
         </StyledWindowHeader>
@@ -75,8 +94,7 @@ export const ContractBounce: React.FC<ContractBounceProps> = ({ address }) => {
           <p>Funded: {funded?.toString()}</p>
           <p>Platform Fee: {platformFee}</p>
           <p>Note Balance: {Number(noteBalance)}</p>
-          <p>Active: {time_limit>0 ? "true" : "false"
-          }</p>
+          <p>Active: {remainingTime>0 ? "true" : "false"}</p>
           <p>
             Regular Balance: {cantoBalance?.formatted}
             {cantoBalance?.symbol}

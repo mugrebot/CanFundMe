@@ -25,19 +25,29 @@ const rounds: NextPage = () => {
   });
 
   return (
-    <div style={{ marginTop: '100px', display: "flex", justifyContent: "center", alignItems: "center"}}>
-          <div className="content-container">
-      <StyledWindow style={{ marginTop: "50px", height: "calc(100vh - 50px)", width: "100vw" }} isDarkMode={isDarkMode}>
-        <WindowContent>
-          <StyledScrollView isDarkMode={isDarkMode}>
-            {totalCanFundMes && Number(totalCanFundMes) > 0 && <FactoryBounce index={Number(totalCanFundMes)} />}
-            {!totalCanFundMes && <h1>There are no CanFundMes yet!</h1>}
-          </StyledScrollView>
-        </WindowContent>
-      </StyledWindow>
+    <div style={{ 
+      marginTop: '100px', 
+      display: "grid", 
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                gridTemplateRows: 'repeat(4, 1fr)',
+                gap: '10px',
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+      <div className="content-container">
+        <StyledWindow style={{ marginTop: "50px", height: "calc(100vh - 50px)", width: "100vw" }} isDarkMode={isDarkMode}>
+          <WindowContent>
+          <StyledScrollView
+              isDarkMode={isDarkMode}
+            >
+              {totalCanFundMes && Number(totalCanFundMes) > 0 && <FactoryBounce index={Number(totalCanFundMes)} style={{ marginTop:'100px' }} />}
+              {!totalCanFundMes && <h1>There are no CanFundMes yet!</h1>}
+            </StyledScrollView>
+          </WindowContent>
+        </StyledWindow>
+      </div>
     </div>
-    </div>
-  );
+  ); 
 }
 
 export default rounds;

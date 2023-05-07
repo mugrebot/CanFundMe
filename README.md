@@ -1,8 +1,24 @@
-# 🏗 Scaffold-ETH 2
+# 🏗 BUILT ON Scaffold-ETH 2
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+# CanFundMe
+CanFundMe is a decentralized crowdfunding platform built on Ethereum, designed to support projects and ideas with a simple, yet effective, funding mechanism. CanFundMe integrates Gitcoin and IPFS to support user profiles, organic growth, and reduce Sybil attacks. With a focus on user-friendly experience and enhanced security, CanFundMe aims to revolutionize the crowdfunding space.
 
 ⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, and Typescript.
+
+# Features
+- CanFundMeFactory contract deploys individual CanFundMe campaigns
+- EIPPY and PROFILE verifier contracts utilize EIP712 typed data standards for increased security
+- Gitcoin integration rewards projects with a Gitcoin score higher than 10, reducing platform fees to 0%
+- IPFS integration allows customizable profiles with an IPFS hash pointing to a JSON object containing profile pictures and project descriptions
+- Signatures and typed data attest to project ownership and the validity of information provided
+
+# Smart Contracts
+- CanFundMeFactory: The factory contract that deploys CanFundMe campaigns
+- EIPPY: A verifier contract using the EIP712 typed data standards
+- PROFILE: A verifier contract using the EIP712 typed data standards for user profiles
+- CanFundMe: The main crowdfunding contract that enables users to create and participate in crowdfunding campaigns
+
+⚙️ Deployed using Vercel
 
 - ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
 - 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.

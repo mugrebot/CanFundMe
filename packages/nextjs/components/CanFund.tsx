@@ -122,6 +122,22 @@ export const CanFund = ({ contractAddress }) => {
     abi: CanFundMeABI,
   });
 
+  const { writeAsync: withdrawCantoAsync, isLoading: withdrawCantoIsLoading } = useScaffoldContractWrite({
+    contractName: "CanFundMe",
+    functionName: " withdraw_threshold_missed",
+    address: contractAddress,
+    abi: CanFundMeABI,
+  });
+
+  const { writeAsync: withdrawNoteAsync, isLoading: withdrawNoteIsLoading } = useScaffoldContractWrite({
+    contractName: "CanFundMe",
+    functionName: "withdraw_threshold_missed_with_token",
+    address: contractAddress,
+    abi: CanFundMeABI,
+  });
+
+
+
   //set below to type number
   const [contract_balance, setContractBalance] = useState("");
 
@@ -269,6 +285,46 @@ export const CanFund = ({ contractAddress }) => {
         <EventAnimation contractAddress={contractAddress} />
       </div>
       <div>
+              {remainingTime<=0 && !threshold_crossed &&  <StyledWindow
+  isDarkMode={isDarkMode}
+  style={{
+    height: 150,
+    width: 250,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }}
+  shadow={true}
+>
+  <StyledWindowHeader isDarkMode={isDarkMode} className="window-title">
+    threshold_missed.exe
+  </StyledWindowHeader>
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    <label>Withdraw Note?</label>
+    <Checkbox variant="flat" checked={_accept_note} onChange={() => setAcceptNote(!_accept_note)} />
+  </div>
+  {!_accept_note && (
+    <StyledButton
+      variant="flat"
+      isDarkMode={isDarkMode}
+      onClick={withdrawCantoAsync}
+      disabled={withdrawCantoIsLoading}
+    >
+      {withdrawCantoIsLoading ? "Loading..." : "Withdraw"}
+    </StyledButton>
+  )}
+  {_accept_note && (
+    <StyledButton
+      variant="flat"
+      isDarkMode={isDarkMode}
+      onClick={withdrawNoteAsync}
+      disabled={withdrawNoteIsLoading}
+    >
+      {withdrawNoteIsLoading ? "Loading..." : "Withdraw"}
+    </StyledButton>
+  )}
+</StyledWindow>}
         <Draggable nodeRef={window2Ref} bounds="body" defaultPosition={timeRemainingWindowPosition}>
           <StyledWindow isDarkMode={isDarkMode} ref={window2Ref}>
             <div>

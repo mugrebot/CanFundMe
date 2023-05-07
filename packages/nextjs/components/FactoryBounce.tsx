@@ -13,10 +13,8 @@ import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   grid-auto-rows: auto;
-  grid-gap: 16px;
-  padding: 16px;
 `;
 
 const ContractBounce = dynamic(() => import("../components/ContractBounce"), { ssr: false });
